@@ -55,3 +55,12 @@ class DevelopmentPlan(db.Model, SerializerMixin):
             raise ValueError("Development plan title must be unique")
         return title.strip()
 
+class Area(db.Model, SerializerMixin):
+    __tablename__ = 'area'
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String, nullable=True)
+# rships
+    development_plans = db.relationship('DevelopmentPlan', back_populates='area')
+
+

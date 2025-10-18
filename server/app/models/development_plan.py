@@ -5,7 +5,7 @@ from sqlalchemy.orm import validates
 db = SQLAlchemy()
 
 
-class DevelopmentPlan(db.Model):
+class DevelopmentPlan(db.Model, SerializerMixin):
     __tablename__ = 'development_plans'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -14,13 +14,13 @@ class DevelopmentPlan(db.Model):
     type = db.Column(db.String(25), nullable=False)
 
     area_size = db.Column(db.Float, nullable=False)
-    status = db.Column(db.__subclasshook__tring, default="Pending")
+    status = db.Column(db.String, default="Pending")
 
     polygon_id = db.Column(db.String(50), nullable=False)
-    centrod_lat = db.Column(db.Float, nullable=False)
-    centrod_long = db.Column(db.Float, nullable=False)
+    centroid_lat = db.Column(db.Float, nullable=False)
+    centroid_long = db.Column(db.Float, nullable=False)
 
-    ai_results = db.Column(db.Text(20), nullable=False)
+    ai_results = db.Column(db.Text, nullable=False)
 
     # rships
    
@@ -28,6 +28,8 @@ class DevelopmentPlan(db.Model):
         'Area', back_populates='development_plans', cascade='all, delete-orphan')
     user_id = db.relationship(
         'User', back_populates='development_plans', cascade='all, delete-orphan')
+    
+    serialize_rules = ('-area.station', '-user.station')
 
     def to_dict(self):
         return {
@@ -43,13 +45,13 @@ class DevelopmentPlan(db.Model):
         }
     
     @validates('title')
-    def validate_name(self, key, name):
-        if not name or len(name) <1:
+    def validate_name(self, key, title):
+        if not title or len(title) <1:
             raise ValueError("Title must be at least 1 letter")
         
         
-        existing = DevelopmentPlan.query.filter(DevelopmentPlan.name == name.strip().first())
+        existing = DevelopmentPlan.query.filter_by(title=title.strip()).first()
         if existing and existing.id != getattr(self, "id", None):
-            raise ValueError("Station name must be unique")
-        return name.strip()
+            raise ValueError("Development plan title must be unique")
+        return title.strip()
 

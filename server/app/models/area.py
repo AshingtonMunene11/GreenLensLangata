@@ -23,7 +23,7 @@ class Area(db.Model, SerializerMixin):
 
 # geometry field for polygons
 # srid => standard lat/long
-    polygon = db.Column(Geometry("POLYGON", srid=4326), nullable=False)
+    polygon_data = db.Column(db.Text, nullable=True)
 
 # rships
     development_plans = db.relationship(
@@ -32,5 +32,24 @@ class Area(db.Model, SerializerMixin):
     ai_insights = db.relationship('AIInsight', back_populates='area', cascade='all, delete-orphan')
     development_plans = db.relationship('DevelopmentPlan', back_populates='area', cascade='all, delete-orphan')
 
+
     serialize_rules = ('-reports.area', '-ai_insights.area', '-development_plans.area')
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'polygon_id': self.polygon_id,
+            'avg_temp': self.avg_temp,
+            'green_cover': self.green_cover,
+            'water_cover': self.water_cover,
+            'build_cover': self.build_cover,
+            'empty_cover': self.empty_cover,
+            'flood_risk':self.flood_risk,
+            'latest': self.latest
+
+        } 
+    
+
+    
 

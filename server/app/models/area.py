@@ -46,7 +46,7 @@ class Area(db.Model, SerializerMixin):
             'build_cover': self.build_cover,
             'empty_cover': self.empty_cover,
             'flood_risk':self.flood_risk,
-            'latest': self.latest
+            'latest': "Latest",
 
         } 
     

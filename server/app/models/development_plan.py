@@ -41,7 +41,7 @@ class DevelopmentPlan(db.Model, SerializerMixin):
             'status': self.status,
             'polygon_id': self.polygon_id,
             'centrod_lat': self.centrod_lat,
-            'centrod_long': self.centrod_long
+            'centrod_long': self.centrod_long,
         }
 
     @validates('title')
@@ -53,6 +53,3 @@ class DevelopmentPlan(db.Model, SerializerMixin):
         if existing and existing.id != getattr(self, "id", None):
             raise ValueError("Development plan title must be unique")
         return title.strip()
-
-
-

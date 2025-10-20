@@ -3,6 +3,7 @@ from models import db, DevelopmentPlan
 from flask_cors import CORS
 from flask_migrate import Migrate
 from config import Config
+from app import app
 
 app = Flask(__name__)
 app.config.from_object('config.Config')

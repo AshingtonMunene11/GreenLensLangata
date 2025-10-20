@@ -2,7 +2,6 @@ import Image from "next/image";
 
 export default function Login() {
   return (
-    // Replace with your image path
     <div
       className="min-h-screen flex items-center justify-center bg-cover bg-center"
       style={{ backgroundImage: 'url(/backgroundsample1.png)' }}

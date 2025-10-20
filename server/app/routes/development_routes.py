@@ -30,3 +30,24 @@ def create_plan():
     db.session.commit()
     return jsonify(new_plan.to_dict()), 201
 
+@app.route('/devlopment_plans/<int:id>', methods=['PATCH'])
+def update_plan(id):
+    plan=DevelopmentPlan.query.get_or_404(id)
+    data=request.get_json()
+    if "title" in data:
+        plan.title=data['title']
+    if "description" in data:
+        plan.description=data['description']
+    if "type" in data:
+        plan.type=data['type']
+    if "area_size" in data:
+        plan.description=data['description']
+    db.session.commit()
+    return jsonify(plan.to_dict())
+
+@app.route('/development_plans/<int:id>', methods =['DELETE'])
+def delete_plan(id):
+    plan = DevelopmentPlan.query.get_or_404(id)
+    db.session.delete(plan)
+    db.session.commit()
+    return jsonify({'message': f'Development plan deleted'})

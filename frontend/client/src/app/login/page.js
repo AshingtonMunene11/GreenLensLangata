@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 export default function Login() {
   return (
@@ -59,8 +60,12 @@ export default function Login() {
           </div>
         </form>
 
-        <p className="mt-6 text-center text-sm">
+        {/* <p className="mt-6 text-center text-sm">
           Don't have an account? <a href="#" className="underline">Sign up</a>
+        </p> */}
+        <p className="mt-6 text-center text-sm">
+            Already have an account?{" "}
+            <Link href="/signup" className="underline"> Sign Up</Link>
         </p>
       </div>
     </div>

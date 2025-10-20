@@ -64,7 +64,7 @@ export default function Login() {
           Don't have an account? <a href="#" className="underline">Sign up</a>
         </p> */}
         <p className="mt-6 text-center text-sm">
-            Already have an account?{" "}
+            Don't have an account? {" "}
             <Link href="/signup" className="underline"> Sign Up</Link>
         </p>
       </div>

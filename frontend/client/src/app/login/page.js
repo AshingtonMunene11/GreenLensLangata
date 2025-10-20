@@ -8,13 +8,18 @@ export default function Login() {
       style={{ backgroundImage: 'url(/backgroundsample1.png)' }}
     >
       <div className="bg-[#223D2E] p-8 rounded-lg shadow-lg w-full max-w-md text-white">
-        <div className="flex justify-center mb-4">
-        <Image
+        {/* <div className="animate-slide-in-right border border-red-500 bg-white"> */}
+            <div className="flex justify-center mb-4">
+                <div className="animate-slide-in-right">
+                    <Image
                         src="/White Logo.svg"
                         alt="GreenLens Logo"
                         width={300}
                         height={80}
-            /></div>
+                    />
+                </div>
+            </div>
+        {/* </div> */}
         <h2 className="text-m font-bold mb-6 text-center">Login</h2>
 
         <form className="space-y-4 rounded-2xl">

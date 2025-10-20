@@ -14,7 +14,8 @@ class DevelopmentPlan(db.Model, SerializerMixin):
     type = db.Column(db.String(25), nullable=False)
 
     area_size = db.Column(db.Float, nullable=False)
-    status = db.Column(db.String, default="Pending")
+    status = db.Column(db.String, default="Pending") 
+    # status: pending or failed or passed
 
     polygon_id = db.Column(db.String(50), nullable=False)
     centroid_lat = db.Column(db.Float, nullable=False)
@@ -24,10 +25,11 @@ class DevelopmentPlan(db.Model, SerializerMixin):
 
     # rships
 
-    area_id = db.relationship(
+    area = db.relationship(
         'Area', back_populates='development_plans', cascade='all, delete-orphan')
-    user_id = db.relationship(
+    user = db.relationship(
         'User', back_populates='development_plans', cascade='all, delete-orphan')
+    polygon = db.relationship('Polygon', back_populates='development_plans')
 
     serialize_rules = ('-area.station', '-user.station')
 

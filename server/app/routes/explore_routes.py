@@ -50,4 +50,5 @@ def get_langataanalysis():
     }
 
     return jsonify(response)
+
     

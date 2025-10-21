@@ -1,16 +1,19 @@
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy_serializer import SerializerMixin
 from sqlalchemy.orm import validates
+from app import db
 
 
-db = SQLAlchemy()
+
+# db = SQLAlchemy()
 
 class Area(db.Model, SerializerMixin):
     __tablename__ = 'areas'
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=True, unique=True)
-    polygon_id = db.Column(db.String(50), nullable=False, unique=True)
+    polygon_id = db.Column(db.Integer, db.ForeignKey('polygons.id'), nullable=False)
+
 
     # stats
     avg_temp = db.Column(db.Float)
@@ -26,14 +29,13 @@ class Area(db.Model, SerializerMixin):
     polygon_data = db.Column(db.Text, nullable=True)
 
 # rships
-    development_plans = db.relationship(
-        'DevelopmentPlan', back_populates='area', cascade='all, delete-orphan')
-    reports = db.relationship('Report', back_populates='area', cascade='all, delete-orphan')
-    ai_insights = db.relationship('AIInsight', back_populates='area', cascade='all, delete-orphan')
+
+    # reports = db.relationship('Report', back_populates='area', cascade='all, delete-orphan')
+    ai_insights = db.relationship('AIInsights', back_populates='area', cascade='all, delete-orphan')
     development_plans = db.relationship('DevelopmentPlan', back_populates='area', cascade='all, delete-orphan')
 
 
-    serialize_rules = ('-reports.area', '-ai_insights.area', '-development_plans.area')
+    serialize_rules = ('-ai_insights.area', '-development_plans.area')
 
     def to_dict(self):
         return {

@@ -21,32 +21,32 @@ export default function Navbar() {
         <div className="flex items-center gap-8 border border-[#112C23] rounded-[32px] px-8 py-2">
           <Link
             href="/"
-            className="text-[#112C23] text-base font-medium hover:underline underline-offset-4"
+            className="text-[#112C23] text-base font-normal hover:underline underline-offset-4"
           >
             Home
           </Link>
           <Link
             href="/explore"
-            className="text-[#112C23] text-base font-medium hover:underline underline-offset-4"
+            className="text-[#112C23] text-base font-normal hover:underline underline-offset-4"
           >
             Explore
           </Link>
           <Link
             href="/development"
-            className="text-[#112C23] text-base font-medium hover:underline underline-offset-4"
+            className="text-[#112C23] text-base font-normal hover:underline underline-offset-4"
           >
             Development
           </Link>
           <Link
             href="/community"
-            className="text-[#112C23] text-base font-medium hover:underline underline-offset-4"
+            className="text-[#112C23] text-base font-normal hover:underline underline-offset-4"
           >
             Community
           </Link>
         </div>
 
         {/* Log Out Button */}
-        <button className="bg-[#86EE92] text-[#112C23] text-base font-medium px-6 py-2 rounded-full hover:opacity-90 transition cursor-pointer">
+        <button className="bg-[#86EE92] text-[#112C23] text-base font-normal px-6 py-2 rounded-full hover:opacity-90 transition cursor-pointer">
           Log Out
         </button>
       </div>

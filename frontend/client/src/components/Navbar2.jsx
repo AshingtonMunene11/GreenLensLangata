@@ -8,7 +8,7 @@ export default function Navbar() {
       {/* Logo */}
       <div className="flex items-center">
         <Image
-          src="/Green_Logo.svg"
+          src="/White Logo (1).svg"
           alt="GreenLens Logo"
           width={324}
           height={82.13}

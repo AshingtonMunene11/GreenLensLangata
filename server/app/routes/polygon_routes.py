@@ -19,8 +19,6 @@ def get_all_polygons():
     return jsonify([polygon.to_dict() for polygon in polygons])
 
 
-
-
 @app.route('/polygons/<int:polygon_id>', methods=['GET'])
 def get_polygon(polygon_id):
     polygon = Polygon.query.get_or_404(polygon_id)

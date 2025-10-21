@@ -1,5 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
+import Navbar2 from "../../components/Navbar2";
+// import Navbar from "../../components/Navbar";
 
 export default function Login() {
   return (
@@ -9,6 +11,9 @@ export default function Login() {
     >
       <div className="bg-[#223D2E] p-8 rounded-lg shadow-lg w-full max-w-md text-white">
         {/* <div className="animate-slide-in-right border border-red-500 bg-white"> */}
+        <div className="fixed top-0 left-0 w-full z-50 bg-transparent text-white">
+            <Navbar2 />
+          </div>
             <div className="flex justify-center mb-4">
                 <div className="animate-slide-in-right">
                     <Image

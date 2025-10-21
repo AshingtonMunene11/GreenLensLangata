@@ -1,8 +1,11 @@
+from app import db
+
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy_serializer import SerializerMixin
+
 from sqlalchemy.orm import validates
 
-db = SQLAlchemy()
+# db = SQLAlchemy()
 
 
 class DevelopmentPlan(db.Model, SerializerMixin):
@@ -14,10 +17,13 @@ class DevelopmentPlan(db.Model, SerializerMixin):
     type = db.Column(db.String(25), nullable=False)
 
     area_size = db.Column(db.Float, nullable=False)
-    status = db.Column(db.String, default="Pending") 
+    status = db.Column(db.String, default="Pending")
     # status: pending or failed or passed
+    area_id = db.Column(db.Integer, db.ForeignKey('areas.id'))
 
-    polygon_id = db.Column(db.String(50), nullable=False)
+    polygon_id = db.Column(db.Integer, db.ForeignKey(
+        'polygons.id'), nullable=False)
+
     centroid_lat = db.Column(db.Float, nullable=False)
     centroid_long = db.Column(db.Float, nullable=False)
 
@@ -26,12 +32,12 @@ class DevelopmentPlan(db.Model, SerializerMixin):
     # rships
 
     area = db.relationship(
-        'Area', back_populates='development_plans', cascade='all, delete-orphan')
-    user = db.relationship(
-        'User', back_populates='development_plans', cascade='all, delete-orphan')
+        'Area', back_populates='development_plans',)
+    # user = db.relationship(
+    #     'User', back_populates='development_plans', cascade='all, delete-orphan')
     polygon = db.relationship('Polygon', back_populates='development_plans')
 
-    serialize_rules = ('-area.station', '-user.station')
+    serialize_rules = ('-area.station',)
 
     def to_dict(self):
         return {
@@ -42,8 +48,8 @@ class DevelopmentPlan(db.Model, SerializerMixin):
             'area_size': self.area_size,
             'status': self.status,
             'polygon_id': self.polygon_id,
-            'centrod_lat': self.centrod_lat,
-            'centrod_long': self.centrod_long,
+            'centroid_lat': self.centroid_lat,
+            'centroid_long': self.centroid_long,
         }
 
     @validates('title')

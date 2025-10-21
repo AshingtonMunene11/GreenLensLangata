@@ -1,9 +1,11 @@
+from app import db
+
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy_serializer import SerializerMixin
 
 
 
-db = SQLAlchemy()
+# db = SQLAlchemy()
 
 class Polygon(db.Model, SerializerMixin):
     __tablename__= 'polygons'
@@ -13,7 +15,7 @@ class Polygon(db.Model, SerializerMixin):
     coordinates= db.Column(db.Text, nullable=False)
     area =db.Column(db.Integer, db.ForeignKey('areas.id'), nullable=False)
 # rships
-    ai_insights = db.relationship('AIInsight', back_populates='polygon', cascade='all, delete-orphan')
+    ai_insights = db.relationship('AIInsights', back_populates='polygon', cascade='all, delete-orphan')
     development_plans = db.relationship('DevelopmentPlan', back_populates='polygon', cascade='all, delete-orphan')
 
     serialize_rules = ('-area.polygons', '-ai_insights.polygon')

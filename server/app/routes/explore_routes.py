@@ -1,5 +1,5 @@
 from flask import Flask, jsonify, request
-from models import db, Area, AIinsights
+from models import db, Area, AIInsights
 from flask_cors import CORS
 from flask_migrate import Migrate
 from config import Config
@@ -26,18 +26,18 @@ def get_langataanalysis():
     
 # ai insight-ltst
     latest_insight = (
-        AIinsights.query.filter_by(area_id=langata_area.id)
-        .order_by(AIinsights.created_at.desc())
+        AIInsights.query.filter_by(area_id=langata_area.id)
+        .order_by(AIInsights.created_at.desc())
         .first()
     )
 
     five_years_ago = datetime.utcnow() - timedelta(days=5 * 365)
     past_insights = (
-        AIinsights.query.filter(
-            AIinsights.area_id == langata_area.id,
-            AIinsights.created_at >= five_years_ago
+        AIInsights.query.filter(
+            AIInsights.area_id == langata_area.id,
+            AIInsights.created_at >= five_years_ago
         )
-        .order_by(AIinsights.created_at.desc())
+        .order_by(AIInsights.created_at.desc())
         .all()
     )
 

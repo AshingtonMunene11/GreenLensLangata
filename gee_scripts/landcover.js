@@ -18,3 +18,11 @@ print(NairobiCover)
 
 var filtered = NairobiCover.filter(ee.Filter.date('2020-01-01', '2024-01-01'));
 print(filtered)
+
+// cover classsification(tree, water etc.)
+var classification = ee.Image(filtered.first());
+print(classification)
+
+// clip to geometry(nairobi)
+var clipped = classification.clip(geometry);
+Map.addLayer(clipped);

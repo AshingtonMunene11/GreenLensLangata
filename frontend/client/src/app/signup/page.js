@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import Navbar2 from "../../components/Navbar2";
 
-export default function Login() {
+export default function Signup() {
   return (
     <div
       className="min-h-screen flex items-center justify-center bg-cover bg-center"

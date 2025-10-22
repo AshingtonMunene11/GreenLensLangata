@@ -1,9 +1,46 @@
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import Navbar2 from "../../components/Navbar2";
 // import Navbar from "../../components/Navbar";
 
 export default function Login() {
+  const [formData, setFormData] = useState({ email: "", password: "" });
+  const [message, setMessage] = useState("");
+  const router = useRouter();
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.id]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setMessage("Logging in...");
+
+    try {
+      console.log("API URL:", process.env.NEXT_PUBLIC_API_URL);
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        // where the token iko stored
+        localStorage.setItem("token", data.token);
+        setMessage("Login successful!");
+        // setTimeout(() => router.push("/dashboard"), 1500);     AKUMU`s work here is where we`ll redirect
+      } else {
+        setMessage(data.message || "Invalid credentials");
+      }
+    } catch (error) {
+      console.error(error);
+      setMessage("Server error. Please try again later.");
+    }
+  };
   return (
     <div
       className="min-h-screen flex items-center justify-center bg-cover bg-center"
@@ -26,15 +63,17 @@ export default function Login() {
             </div>
         {/* </div> */}
         <h2 className="text-m font-bold mb-6 text-center">Login</h2>
-
-        <form className="space-y-4 rounded-2xl">
+        <form onSubmit={handleSubmit} className="space-y-4 rounded-2xl">
           <div>
             {/* <label htmlFor="email" className="block text-sm font-medium">Email</label> */}
             <input
               type="email"
               id="email"
+              value={formData.email}
+              onChange={handleChange}
               className="mt-1 block w-full px-4 py-2 rounded-xl bg-white text-[#223D2E] border border-[#223D2E] focus:ring-white focus:border-white"
               placeholder="Email"
+              required
             />
           </div>
 
@@ -43,8 +82,11 @@ export default function Login() {
             <input
               type="password"
               id="password"
+              value={formData.password}
+              onChange={handleChange}
               className="mt-1 block w-full px-4 py-2 rounded-xl bg-white text-[#223D2E] border border-[#223D2E] focus:ring-white focus:border-white"
               placeholder="Password"
+              required
             />
           </div>
 
@@ -56,15 +98,41 @@ export default function Login() {
             {/* <a href="#" className="text-sm underline">Forgot Password?</a> */}
           </div>
          <div className="flex justify-center">
-            <button
-                type="submit"
-                className="w-1/2 bg-white text-[#223D2E] py-2 px-4 rounded-full hover:bg-gray-100 transition"
+          <button
+              type="submit"
+              disabled={message === "Logging in..."}
+              className={`w-1/2 py-2 px-4 rounded-full transition ${
+                message === "Logging in..."
+                  ? "bg-gray-400 text-gray-200 cursor-not-allowed"
+                  : "bg-white text-[#223D2E] hover:bg-gray-100"
+              }`}
             >
-                Sign In
-            </button>
+              {message === "Logging in..." ? "Please wait..." : "Login"}
+          </button>
+            {/* <button
+                type="submit"
+                disabled={message === "Logging in..."}
+                className= {"w-1/2 bg-white text-[#223D2E] py-2 px-4 rounded-full hover:bg-gray-100 transition" ${
+                message === "Logging in..."
+                  ? "bg-gray-400 text-gray-200 cursor-not-allowed"
+                  : "bg-white text-[#223D2E] hover:bg-gray-100"
+              }`}
+            >
+              {message === "Logging in..." ? "Please wait..." : "Login"}
+            </button> */}
           </div>
         </form>
-
+        {message && (
+          <p
+            className={`mt-4 text-center text-sm font-medium ${
+              message.toLowerCase().includes("success")
+                ? "text-green-400"
+                : "text-red-400"
+            }`}
+          >
+            {message}
+          </p>
+        )}
         {/* <p className="mt-6 text-center text-sm">
           Don't have an account? <a href="#" className="underline">Sign up</a>
         </p> */}

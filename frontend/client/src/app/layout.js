@@ -6,6 +6,16 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata = {
   title: "GreenLens - Lang'ata",
   description: "AI-powered sustainability insights for Lang'ata",
+  manifest: "/site.webmanifest",
+  icons: {
+    icon: "/favicon.ico",
+    shortcut: "/favicon-96x96.png",
+    apple: "/apple-touch-icon.png",
+    other: [
+      { rel: "icon", url: "/favicon-96x96.png", sizes: "96x96" },
+      { rel: "icon", url: "/favicon.svg", type: "image/svg+xml" },
+    ],
+  },
 };
 
 export default function RootLayout({ children }) {

@@ -26,3 +26,13 @@ print(classification)
 // clip to geometry(nairobi)
 var clipped = classification.clip(geometry);
 Map.addLayer(clipped);
+
+// export data
+Export.image.toDrive({
+  image: clipped, 
+  description: 'export_image',
+  folder: 'EarthEngine', 
+  fileNamePrefix: 'classification_raw',
+  region: geometry, 
+  scale: 10,
+  maxPixels: 1e10})

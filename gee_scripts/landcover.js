@@ -1,3 +1,4 @@
+// --------- DOCUMENTING PURPOSES ONLY ------ DOESN'T RUN IN VSCODE
 // Map.addLayer(area3)
 var ADM0_NAME = 'Kenya';
 var COUNTY = 'Nairobi';

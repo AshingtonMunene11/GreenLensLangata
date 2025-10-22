@@ -18,4 +18,4 @@ function Developmentpage() {
   );
 }
 
-export default page;
+export default Developmentpage;

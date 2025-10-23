@@ -1,6 +1,81 @@
-# venv
-venv/
-server/venv/
-
-*.pyc
+# ========================================
+# General
+# ========================================
 __pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# ========================================
+# Environment & Config Files
+# ========================================
+.env
+.env.local
+.env.development
+.env.production
+*.bak
+instance/
+
+# ========================================
+# Virtual Environment
+# ========================================
+venv/
+.env/
+.venv/
+
+# ========================================
+# Logs
+# ========================================
+*.log
+logs/
+*.sqlite3
+*.db
+migrations/versions/__pycache__/
+
+# ========================================
+# Flask Specific
+# ========================================
+app.db
+*.sqlite
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# ========================================
+# Next.js / Node.js
+# ========================================
+client/node_modules/
+client/.next/
+client/out/
+client/.turbo/
+client/.vercel/
+client/dist/
+client/build/
+
+# ========================================
+# IDEs / Editors
+# ========================================
+.vscode/
+.idea/
+*.code-workspace
+
+# ========================================
+# OS Files
+# ========================================
+*.tmp
+*.bak
+*.pid
+
+# ========================================
+# Python packaging
+# ========================================
+build/
+dist/
+*.egg-info/
+.eggs/
+MANIFEST

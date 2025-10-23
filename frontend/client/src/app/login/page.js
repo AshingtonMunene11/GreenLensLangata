@@ -4,8 +4,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import Navbar2 from "../../components/Navbar2";
-// import Navbar from "../../components/Navbar";
+import AuthNavbar from "../../components/AuthNavbar";
+import { Eye, EyeOff } from "lucide-react";
 
 export default function Login() {
   const [formData, setFormData] = useState({ email: "", password: "" });
@@ -16,17 +16,22 @@ export default function Login() {
     setFormData({ ...formData, [e.target.id]: e.target.value });
   };
 
+  const [showPassword, setShowPassword] = useState(false);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage("Logging in...");
 
     try {
       console.log("API URL:", process.env.NEXT_PUBLIC_API_URL);
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/auth/login`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(formData),
+        }
+      );
       const data = await res.json();
       if (res.ok) {
         // where the token iko stored
@@ -44,25 +49,27 @@ export default function Login() {
   return (
     <div
       className="min-h-screen flex items-center justify-center bg-cover bg-center"
-      style={{ backgroundImage: 'url(/backgroundsample1.png)' }}
+      style={{ backgroundImage: "url(/backgroundsample1.png)" }}
     >
-      <div className="bg-[#223D2E] p-8 rounded-lg shadow-lg w-full max-w-md text-white">
+      <div className="bg-[#112C23] p-8 rounded-lg shadow-lg w-full max-w-md text-white">
         {/* <div className="animate-slide-in-right border border-red-500 bg-white"> */}
         <div className="fixed top-0 left-0 w-full z-50 bg-transparent text-white">
-            <Navbar2 />
+          <AuthNavbar />
+        </div>
+        <div className="flex justify-center mb-4">
+          <div className="animate-slide-in-right">
+            <Image
+              src="/White Logo.svg"
+              alt="GreenLens Logo"
+              width={300}
+              height={80}
+            />
           </div>
-            <div className="flex justify-center mb-4">
-                <div className="animate-slide-in-right">
-                    <Image
-                        src="/White Logo.svg"
-                        alt="GreenLens Logo"
-                        width={300}
-                        height={80}
-                    />
-                </div>
-            </div>
+        </div>
         {/* </div> */}
-        <h2 className="text-m font-bold mb-6 text-center">Login</h2>
+        <h2 className="text-m font-normal mb-6 text-center text-[22px]">
+          Login
+        </h2>
         <form onSubmit={handleSubmit} className="space-y-4 rounded-2xl">
           <div>
             {/* <label htmlFor="email" className="block text-sm font-medium">Email</label> */}
@@ -71,34 +78,44 @@ export default function Login() {
               id="email"
               value={formData.email}
               onChange={handleChange}
-              className="mt-1 block w-full px-4 py-2 rounded-xl bg-white text-[#223D2E] border border-[#223D2E] focus:ring-white focus:border-white"
+              className="mt-1 block w-full px-4 py-2 rounded-xl bg-white text-[#112C23] placeholder-[#112C23] border border-[#223D2E] focus:ring-white focus:border-white"
               placeholder="Email"
               required
             />
           </div>
 
-          <div>
-            {/* <label htmlFor="password" className="block text-sm font-medium">Password</label> */}
+          <div className="relative">
             <input
-              type="password"
+              type={showPassword ? "text" : "password"}
               id="password"
               value={formData.password}
               onChange={handleChange}
-              className="mt-1 block w-full px-4 py-2 rounded-xl bg-white text-[#223D2E] border border-[#223D2E] focus:ring-white focus:border-white"
+              className="mt-1 block w-full px-4 py-2 rounded-xl bg-white text-[#112C23] placeholder-[#112C23] border border-[#223D2E] focus:ring-white focus:border-white"
               placeholder="Password"
               required
             />
+
+            {/* Toggle eye icon */}
+            <span
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute inset-y-0 right-3 flex items-center cursor-pointer text-[#112C23] hover:text-[#112C23] transition-colors"
+            >
+              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+            </span>
           </div>
 
           <div className="flex items-center justify-between">
             <label className="flex items-center">
-              <input type="checkbox" className="h-4 w-4 text-white focus:ring-white border-white rounded" />
+              <input
+                type="checkbox"
+                className="h-3 w-3 text-white focus:ring-white border-white rounded"
+              />
               <span className="ml-2 text-sm">Remember Me</span>
             </label>
             {/* <a href="#" className="text-sm underline">Forgot Password?</a> */}
           </div>
-         <div className="flex justify-center">
-          <button
+          <div className="flex justify-center">
+            <button
               type="submit"
               disabled={message === "Logging in..."}
               className={`w-1/2 py-2 px-4 rounded-full transition ${
@@ -107,8 +124,8 @@ export default function Login() {
                   : "bg-white text-[#223D2E] hover:bg-gray-100"
               }`}
             >
-              {message === "Logging in..." ? "Please wait..." : "Login"}
-          </button>
+              {message === "Logging in..." ? "Please wait..." : "Sign In"}
+            </button>
             {/* <button
                 type="submit"
                 disabled={message === "Logging in..."}
@@ -137,8 +154,11 @@ export default function Login() {
           Don't have an account? <a href="#" className="underline">Sign up</a>
         </p> */}
         <p className="mt-6 text-center text-sm">
-            Don't have an account? {" "}
-            <Link href="/signup" className="underline"> Sign Up</Link>
+          Don't have an account?{" "}
+          <Link href="/signup" className="underline">
+            {" "}
+            Sign Up
+          </Link>
         </p>
       </div>
     </div>

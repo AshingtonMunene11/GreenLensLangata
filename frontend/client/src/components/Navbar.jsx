@@ -46,9 +46,12 @@ export default function Navbar() {
         </div>
 
         {/* Log Out Button */}
-        <button className="bg-[#86EE92] text-[#112C23] text-base font-normal px-6 py-2 rounded-full hover:opacity-90 transition cursor-pointer">
+        <Link
+          href="/login"
+          className="bg-[#86EE92] text-[#112C23] text-base font-normal px-6 py-2 rounded-full hover:opacity-90 transition cursor-pointer inline-block text-center"
+        >
           Log Out
-        </button>
+        </Link>
       </div>
     </nav>
   );

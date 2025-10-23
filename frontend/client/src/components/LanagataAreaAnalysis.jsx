@@ -44,7 +44,7 @@ function LanagataAreaAnalysis() {
 
         <div className="mb-10 border border-transparent p-4 w-100 h-100 rounded-3xl bg-[#DEDEDE]">
           <p className="pt-6 pl-6 text-[28px] font-light text-emerald-950">BUILT-UP</p>
-          <p className="pt-35 pb-30 pl-6 text-[90px] font-medium text-emerald-950">{percentages.grassland}%</p>
+          <p className="pt-35 pb-30 pl-6 text-[90px] font-medium text-emerald-950">{percentages.built_up}%</p>
         </div>
 
         <div className="mb-10 border border-transparent p-4 w-100 h-100 rounded-3xl bg-[#DEDEDE]">

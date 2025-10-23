@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Navbar from "../../components/Navbar";
+import Footer from "../../components/Footer";
 import CommunityForm from "../../components/CommunityForm";
 // import { getPosts, createPost, deletePost } from "../../lib/api";
 
@@ -69,6 +70,7 @@ export default function Community() {
           </div>
         </div>
       </section>
+      <Footer />
     </div>
   );
 }

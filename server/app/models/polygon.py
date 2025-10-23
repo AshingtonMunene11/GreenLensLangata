@@ -27,7 +27,3 @@ class Polygon(db.Model, SerializerMixin):
             'coordinates':self.coordinates,
             'area':self.area,
         }
-    
-
-
-

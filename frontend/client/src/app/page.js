@@ -1,4 +1,5 @@
 import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 import Link from "next/link";
 import "./globals.css";
 
@@ -211,6 +212,7 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+      <Footer />
     </main>
   );
 }

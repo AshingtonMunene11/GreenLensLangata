@@ -1,7 +1,7 @@
 from flask import Flask
 from app.config import Config
 from app.extensions import db, migrate, jwt, cors
-from app.models import DevelopmentPlan, Area, Polygon, Report  # Include other models as needed
+from app.models import DevelopmentPlan, Area, Polygon, Report
 
 def create_app():
     app = Flask(__name__)
@@ -13,24 +13,23 @@ def create_app():
     jwt.init_app(app)
     cors.init_app(app, resources={r"/*": {"origins": "http://localhost:3000"}})
 
-    # Register blueprints
+    # Register blueprints via route modules
     from app.routes import (
-        development_routes,
-        explore_routes,
-        polygon_routes,
-        langata_insights_routes,
-        community_bp,
-        auth_routes
+        register_development_routes,
+        register_explore_routes,
+        register_polygon_routes,
+        register_langata_routes,
+        register_community_routes,
+        auth
     )
 
-    development_routes.register_routes(app)
-    explore_routes.register_routes(app)
-    polygon_routes.register_routes(app)
-    langata_insights_routes.register_langata_routes(app)
-    app.register_blueprint(community_bp)
-    app.register_blueprint(auth_routes.auth, url_prefix="/api/auth")
+    register_development_routes(app)
+    register_explore_routes(app)
+    register_polygon_routes(app)
+    register_langata_routes(app)
+    register_community_routes(app)
+    app.register_blueprint(auth, url_prefix="/api/auth")
 
-    # Create tables if they don't exist
     with app.app_context():
         db.create_all()
 

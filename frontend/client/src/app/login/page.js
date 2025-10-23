@@ -37,7 +37,7 @@ export default function Login() {
         // where the token iko stored
         localStorage.setItem("token", data.token);
         setMessage("Login successful!");
-        // setTimeout(() => router.push("/dashboard"), 1500);     AKUMU`s work here is where we`ll redirect
+        setTimeout(() => router.push("/"), 1500);     //AKUMU`s work here is where we`ll redirect
       } else {
         setMessage(data.message || "Invalid credentials");
       }

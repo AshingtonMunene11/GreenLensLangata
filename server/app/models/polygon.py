@@ -2,6 +2,7 @@ from app import db
 
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy_serializer import SerializerMixin
+import json
 
 
 
@@ -14,6 +15,7 @@ class Polygon(db.Model, SerializerMixin):
     name = db.Column(db.String(25), nullable=False)
     coordinates= db.Column(db.Text, nullable=False)
     area =db.Column(db.Integer, db.ForeignKey('areas.id'), nullable=False)
+
 # rships
     ai_insights = db.relationship('AIInsights', back_populates='polygon', cascade='all, delete-orphan')
     development_plans = db.relationship('DevelopmentPlan', back_populates='polygon', cascade='all, delete-orphan')
@@ -24,6 +26,6 @@ class Polygon(db.Model, SerializerMixin):
         return {
             'id':self.id,
             'name':self.name,
-            'coordinates':self.coordinates,
+            'coordinates':json.loads(self.coordinates),
             'area':self.area,
         }

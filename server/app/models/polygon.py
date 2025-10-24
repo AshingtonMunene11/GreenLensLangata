@@ -5,27 +5,28 @@ from sqlalchemy_serializer import SerializerMixin
 import json
 
 
-
 # db = SQLAlchemy()
 
 class Polygon(db.Model, SerializerMixin):
-    __tablename__= 'polygons'
+    __tablename__ = 'polygons'
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(25), nullable=False)
-    coordinates= db.Column(db.Text, nullable=False)
-    area =db.Column(db.Integer, db.ForeignKey('areas.id'), nullable=False)
+    coordinates = db.Column(db.Text, nullable=False)
+    area = db.Column(db.Integer, db.ForeignKey('areas.id'), nullable=False)
 
 # rships
-    ai_insights = db.relationship('AIInsights', back_populates='polygon', cascade='all, delete-orphan')
-    development_plans = db.relationship('DevelopmentPlan', back_populates='polygon', cascade='all, delete-orphan')
+    ai_insights = db.relationship(
+        'AIInsights', back_populates='polygon', cascade='all, delete-orphan')
+    development_plans = db.relationship(
+        'DevelopmentPlan', back_populates='polygon', cascade='all, delete-orphan')
 
     serialize_rules = ('-area.polygons', '-ai_insights.polygon')
 
     def to_dict(self):
         return {
-            'id':self.id,
-            'name':self.name,
-            'coordinates':json.loads(self.coordinates),
-            'area':self.area,
+            'id': self.id,
+            'name': self.name,
+            'coordinates': self.coordinates,
+            'area': self.area,
         }

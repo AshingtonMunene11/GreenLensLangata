@@ -3,8 +3,6 @@ from sqlalchemy_serializer import SerializerMixin
 from sqlalchemy.orm import validates
 from app import db
 
-
-
 # db = SQLAlchemy()
 
 class Area(db.Model, SerializerMixin):
@@ -13,7 +11,6 @@ class Area(db.Model, SerializerMixin):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=True, unique=True)
     polygon_id = db.Column(db.Integer, db.ForeignKey('polygons.id'), nullable=False)
-
 
     # stats
     avg_temp = db.Column(db.Float)

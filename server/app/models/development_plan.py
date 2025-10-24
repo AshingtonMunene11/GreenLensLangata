@@ -24,8 +24,8 @@ class DevelopmentPlan(db.Model, SerializerMixin):
     polygon_id = db.Column(db.Integer, db.ForeignKey(
         'polygons.id'), nullable=False)
 
-    centroid_lat = db.Column(db.Float, nullable=False)
-    centroid_long = db.Column(db.Float, nullable=False)
+    # centroid_lat = db.Column(db.Float, nullable=False)
+    # centroid_long = db.Column(db.Float, nullable=False)
 
     ai_results = db.Column(db.Text, nullable=False)
 
@@ -48,8 +48,7 @@ class DevelopmentPlan(db.Model, SerializerMixin):
             'area_size': self.area_size,
             'status': self.status,
             'polygon_id': self.polygon_id,
-            'centroid_lat': self.centroid_lat,
-            'centroid_long': self.centroid_long,
+
         }
 
     @validates('title')

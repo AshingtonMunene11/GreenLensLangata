@@ -32,7 +32,9 @@ export default function Chatbot() {
     setLoading(true);
     try {
       // const res = await fetch("http://localhost:8000/chat",
-      console.log("API URL:", process.env.NEXT_PUBLIC_API_URL);
+      console.log("Sending to:", `${process.env.NEXT_PUBLIC_API_URL}/chat`);
+      console.log("Payload:", { message: input, language });
+      
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/chat`,
         {
           method: "POST",

@@ -60,3 +60,7 @@ class DevelopmentPlan(db.Model, SerializerMixin):
         if existing and existing.id != getattr(self, "id", None):
             raise ValueError("Development plan title must be unique")
         return title.strip()
+    
+
+
+

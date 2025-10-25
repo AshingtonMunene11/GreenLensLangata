@@ -1,17 +1,18 @@
 from flask import Flask, jsonify, request
 from app import db
-from app.models import DevelopmentPlan, Polygon, AIInsights
+from app.models import DevelopmentPlan, Polygon
 from flask_cors import CORS
 from flask_migrate import Migrate
 from config import Config
 
 
-app = Flask(__name__)
-app.config.from_object('config.Config')
-db.init_app(app)
-migrate = Migrate(app, db)
+# app = Flask(__name__)
+# app.config.from_object('config.Config')
+# db.init_app(app)
+# migrate = Migrate(app, db)
 
-CORS(app)
+# CORS(app)
+
 
 def register_routes(app):
     @app.route('/polygons', methods=['GET'])
@@ -19,16 +20,14 @@ def register_routes(app):
         polygons = Polygon.query.all()
         return jsonify([polygon.to_dict() for polygon in polygons])
 
-
     @app.route('/polygons/<int:polygon_id>', methods=['GET'])
     def get_polygon(polygon_id):
         polygon = Polygon.query.get_or_404(polygon_id)
         return jsonify(polygon.to_dict())
 
-
     @app.route('/polygons/<int:polygon_id>/plans', methods=['POST'])
     def create_plan_on_polygon(polygon_id):
-        polygon = Polygon.get_or_404(polygon_id)
+        polygon = Polygon.query.get_or_404(polygon_id)
 
         data = request.get_json()
 
@@ -39,8 +38,6 @@ def register_routes(app):
             area_size=data.get('area_size'),
             status="Pending",
             polygon_id=polygon.id,  # links the plan to this polygon
-            centroid_lat=data.get('centroid_lat'),
-            centroid_long=data.get('centroid_long'),
             ai_results=data.get('ai_results', '{}')
         )
         db.session.add(new_plan)
@@ -53,8 +50,9 @@ def register_routes(app):
     def get_polygon_grading(polygon_id):
 
         polygon = Polygon.query.get_or_404(polygon_id)
-        insights = AIInsights.query.filter_by(area_id=polygon.area).order_by(
-            AIInsights.created_at.desc()).first()
+
+        insights = DevelopmentPlan.query.filter_by(area_id=polygon.area).order_by(
+            DevelopmentPlan.created_at.desc()).first()
 
         if not insights:
             return jsonify({'message': 'No AI insights found for this polygon'}), 404

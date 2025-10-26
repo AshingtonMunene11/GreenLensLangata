@@ -1,18 +1,39 @@
 from flask import Blueprint, jsonify, request
 from app import db
-from app.models import DevelopmentPlan, PolygonAnalysis
+from app.models import DevelopmentPlan, PolygonAnalysis, Polygon
 import ee
 import re
 
 gee_bp = Blueprint("gee", __name__)
-ee.Initialize(project='serene-lotus-475317-i6')
+# ee.Initialize(project='serene-lotus-475317-i6')
+ee_initialized = False
+
+
+def init_ee():
+    """Initialize Earth Engine only once."""
+    global ee_initialized
+    if not ee_initialized:
+        try:
+            ee.Initialize(project="serene-lotus-475317-i6")
+            ee_initialized = True
+            print("Earth Engine initialized successfully.")
+        except Exception as e:
+            print("Error initializing Earth Engine:", e)
+            return False
+    return True
+
+
+@gee_bp.before_request
+def ensure_ee_initialized():
+    """Ensure EE is initialized before any route runs, except OPTIONS."""
+    if request.method == "OPTIONS":
+        return  # Skip EE init for CORS preflight
+    if not init_ee():
+        return jsonify({"error": "Failed to initialize Earth Engine"}), 500
 
 
 def wkt_to_coords(wkt_str):
-    """
-    Convert WKT POLYGON string to list of [lon, lat] pairs for GEE.
-    Example: "POLYGON((36.785 -1.334, 36.795 -1.334))"
-    """
+
     if not wkt_str.startswith("POLYGON(("):
         raise ValueError("Invalid WKT format")
 
@@ -28,7 +49,26 @@ def wkt_to_coords(wkt_str):
     return [coords]
 
 
-@gee_bp.route("/development_plans/<int:plan_id>/analysis", methods=["GET"])
+@gee_bp.route("/development_plans/<int:plan_id>/analyze", methods=["GET"])
+def get_analysis(plan_id):
+    """Fetch saved analysis results for a development plan."""
+    try:
+        # Get the latest analysis for this plan
+        analysis = PolygonAnalysis.query.filter_by(development_plan_id=plan_id).order_by(
+            PolygonAnalysis.created_at.desc()
+        ).first()
+
+        if not analysis:
+            return jsonify({"error": "No analysis found for this plan"}), 404
+
+        return jsonify(analysis.to_dict()), 200
+
+    except Exception as e:
+        print("Error fetching analysis:", e)
+        return jsonify({"error": str(e)}), 500
+
+
+@gee_bp.route("/development_plans/<int:plan_id>/analyze", methods=["POST"])
 def analyze_plan(plan_id):
     plan = DevelopmentPlan.query.get(plan_id)
     if not plan:
@@ -38,14 +78,13 @@ def analyze_plan(plan_id):
         # Extract and parse the polygon geometry (assuming WKT or stored coords)
         polygon = plan.polygon
 
-        # Example: parse if your polygon looks like "POLYGON((lng lat, lng lat, ...))"
-        coordinates = polygon.replace("POLYGON((", "").replace("))", "")
-        coords_list = [
-            [float(c.split()[0]), float(c.split()[1])] for c in coordinates.split(", ")
-        ]
-        geom = ee.Geometry.Polygon([coords_list])
+        try:
+            coords_list = wkt_to_coords(polygon.coordinates)
+            geom = ee.Geometry.Polygon(coords_list)
+        except Exception as e:
+            print("Invalid WKT:", polygon.coordinates)
+            return jsonify({"error": "Invalid polygon geometry"}), 400
 
-        # Run GEE WorldCover classification
         image = ee.ImageCollection("ESA/WorldCover/v100").first().select("Map")
         clipped = image.clip(geom)
         stats = clipped.reduceRegion(
@@ -74,30 +113,6 @@ def analyze_plan(plan_id):
         db.session.commit()
 
         return jsonify(analysis.to_dict())
-
-    except Exception as e:
-        print("Error running GEE analysis:", e)
-        return jsonify({"error": str(e)}), 500
-
-
-@gee_bp.route("/analyze", methods=["POST"])
-def analyze_polygon():
-    try:
-        data = request.get_json()
-        dev_plan_id = data.get("development_plan_id")
-
-        # Find the polygon linked to this development plan
-        from app.models import DevelopmentPlan
-        plan = DevelopmentPlan.query.get(dev_plan_id)
-        polygon = plan.polygon
-
-        coords = wkt_to_coords(polygon.coordinates)
-        geometry = ee.Geometry.Polygon(coords)
-
-        # Now run your Earth Engine analysis here...
-        result = {"message": "Geometry valid, analysis started"}
-
-        return jsonify(result), 200
 
     except Exception as e:
         print("Error running GEE analysis:", e)

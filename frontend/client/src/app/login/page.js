@@ -1,22 +1,30 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useContext } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import AuthNavbar from "../../components/AuthNavbar";
 import { Eye, EyeOff } from "lucide-react";
+import { UserContext } from "@/context/UserContext";
+
 
 export default function Login() {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [message, setMessage] = useState("");
   const router = useRouter();
+  const { setUser } = useContext(UserContext);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
   };
 
-  const [showPassword, setShowPassword] = useState(false);
+  useEffect(() => {
+  const token = localStorage.getItem("token");
+  if (token) {
+    router.push("/");
+  }}, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -32,12 +40,17 @@ export default function Login() {
           body: JSON.stringify(formData),
         }
       );
+
       const data = await res.json();
       if (res.ok) {
         // where the token iko stored
         localStorage.setItem("token", data.token);
+        localStorage.setItem("user", JSON.stringify(data.user)); // Hapa ndo nimeadd User info ikuwe stored
+
+        setUser(data.user); // to update the logged-in user info
+
         setMessage("Login successful!");
-        setTimeout(() => router.push("/"), 1500);     //AKUMU`s work here is where we`ll redirect
+        setTimeout(() => router.push("/"), 1500);     //redirect to our landing page after use amelogin after signup
       } else {
         setMessage(data.message || "Invalid credentials");
       }

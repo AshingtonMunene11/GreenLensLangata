@@ -6,6 +6,7 @@ import ProjectForm from "./ProjectForm";
 
 export default function ProjectPage() {
   const [selectedPolygon, setSelectedPolygon] = useState(null);
+  const [selectedPlan, setSelectedPlan] = useState(null);
 
   return (
     <div>
@@ -14,7 +15,10 @@ export default function ProjectPage() {
       </div>
 
       <div>
-        <ProjectForm selectedPolygon={selectedPolygon} />
+        <ProjectForm
+          selectedPolygon={selectedPolygon}
+          onPlanCreated={(plan) => setSelectedPlan(plan)}
+        />
       </div>
     </div>
   );

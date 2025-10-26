@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 
 export default function AllProjects() {
   const [projects, setProjects] = useState([]);
@@ -88,7 +89,7 @@ export default function AllProjects() {
   if (!projects.length) return <p>No projects found.</p>;
 
   return (
-    <div className="p-6 bg-[#FAFCF1]">
+    <div className="min-h-screen flex flex-col bg-[#FAFCF1]">
       <Navbar />
 
       <h1 className="mt-40 text-2xl font-bold mb-6">
@@ -225,6 +226,8 @@ export default function AllProjects() {
           </li>
         ))}
       </ul>
+      
     </div>
+    
   );
 }

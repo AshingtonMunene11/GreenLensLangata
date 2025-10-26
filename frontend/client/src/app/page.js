@@ -14,6 +14,7 @@ export default function HomePage() {
           alt="Hero background"
           className="w-full h-[735] object-cover"
         />
+        <div className="absolute inset-0 bg-black/16"></div>
         <div className="absolute inset-0 flex flex-col items-center justify-center">
           <h1 className="font-semibold text-[90px] leading-[1.1] max-w-[1367px] text-white">
             JOIN A MISSION <br /> MAKE A CHANGE
@@ -216,4 +217,3 @@ export default function HomePage() {
     </main>
   );
 }
-

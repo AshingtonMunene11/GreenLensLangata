@@ -1,22 +1,21 @@
 "use client";
 
 import React from "react";
-// import MapView from "@/components/MapView";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import LanagataAreaAnalysis from "@/components/LanagataAreaAnalysis";
-// import ProjectForm from "@/components/ProjectForm";
 import MapParent from "@/components/MapParent";
+import ProjectPage from "@/components/ProjectForm_Results_Parent";
 import ResultsComponent from "@/components/Results";
-
-// import { MapContainer } from "react-leaflet";
 
 function Developmentpage() {
   const router = useRouter();
+  const [selectedPlan, setSelectedPlan] = useState(null);
 
   const goToYourProjects = () => {
-    router.push("/yourprojects"); // replace with your actual route
+    router.push("/yourprojects");
   };
 
   return (
@@ -27,7 +26,7 @@ function Developmentpage() {
       </h1>
 
       <p className="mb-40 mt-6 ml-35 mr-180 text-[22px] font-normal m1-30 my-5 text-emerald-950">
-        Explore AI overlays showing green cover and flood zones. Select a
+        Explore overlays showing green cover and built up zones. Select a
         location, submit your development plan, and get instant insights on land
         suitability and sustainability.
       </p>
@@ -39,11 +38,17 @@ function Developmentpage() {
         Your Projects
       </button>
 
-      <MapParent />
+      <MapParent setSelectedPlan={setSelectedPlan} />
+      {/* <ProjectPage /> */}
+
+      {selectedPlan && (
+        <ResultsComponent
+          planId={selectedPlan.id}
+          projectArea={selectedPlan.area_size}
+        />
+      )}
 
       <LanagataAreaAnalysis />
-      <ResultsComponent />
-
       <Footer />
     </div>
   );

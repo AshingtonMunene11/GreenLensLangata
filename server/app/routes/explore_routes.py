@@ -1,6 +1,6 @@
 from flask import Flask, jsonify, request
 from app import db
-from app.models import Area, AIInsights
+from app.models import Area, Insights
 from flask_cors import CORS
 from flask_migrate import Migrate
 from config import Config

@@ -20,17 +20,18 @@ export default function Login() {
     setFormData({ ...formData, [e.target.id]: e.target.value });
   };
 
-  useEffect(() => {
-  const token = localStorage.getItem("token");
-  if (token) {
-    router.push("/");
-  }}, []);
+  // useEffect(() => {
+  // const token = localStorage.getItem("token");
+  // if (token) {
+  //   router.push("/");
+  // }}, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage("Logging in...");
 
     try {
+      // const res = await fetch("http://127.0.0.1:5000/api/auth/login"
       console.log("API URL:", process.env.NEXT_PUBLIC_API_URL);
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/api/auth/login`,

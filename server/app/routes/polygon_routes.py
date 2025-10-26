@@ -6,14 +6,6 @@ from flask_migrate import Migrate
 from config import Config
 
 
-# app = Flask(__name__)
-# app.config.from_object('config.Config')
-# db.init_app(app)
-# migrate = Migrate(app, db)
-
-# CORS(app)
-
-
 def register_routes(app):
     @app.route('/polygons', methods=['GET'])
     def get_all_polygons():

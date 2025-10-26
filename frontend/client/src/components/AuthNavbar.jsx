@@ -29,12 +29,7 @@ export default function AuthNavbar() {
         >
           Explore
         </Link>
-        <Link
-          href="/development"
-          className="text-[#FFFFFF] text-base font-normal hover:underline underline-offset-4 transition"
-        >
-          Development
-        </Link>
+        
         <Link
           href="/community"
           className="text-[#FFFFFF] text-base font-normal hover:underline underline-offset-4 transition"

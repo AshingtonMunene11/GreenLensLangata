@@ -3,6 +3,7 @@ from app.config import Config
 from app.extensions import db, migrate, jwt, cors
 from app.models import DevelopmentPlan, Area, Polygon, Report
 # from app.routes.chat_routes import chat_bp
+from app.routes.auth_routes import auth 
 
 def create_app():
     app = Flask(__name__)
@@ -16,14 +17,13 @@ def create_app():
     # cors.init_app(app, resources={r"/api/*": {"origins": ["http://localhost:3000", "https://greenlens.ke"]}})
 
 
-    # Register blueprints via route modules
+    # Register blueprints
     from app.routes import (
         register_development_routes,
         register_explore_routes,
         register_polygon_routes,
         register_langata_routes,
-        register_community_routes,
-        auth
+        register_community_routes
     )
 
     register_development_routes(app)
@@ -31,10 +31,12 @@ def create_app():
     register_polygon_routes(app)
     register_langata_routes(app)
     register_community_routes(app)
+
+    # Auth blueprint prefix
     app.register_blueprint(auth, url_prefix="/api/auth")
 
-    from app.routes.chat_routes import chat_bp
-    app.register_blueprint(chat_bp)
+    # from app.routes.chat_routes import chat_bp
+    # app.register_blueprint(chat_bp)
 
     with app.app_context():
         db.create_all()

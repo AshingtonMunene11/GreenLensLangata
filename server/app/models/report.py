@@ -12,7 +12,7 @@ class Report(db.Model):
     image_url = db.Column(db.String(255), nullable=True)    # Image optional (URl)     
     image_file = db.Column(db.String(255), nullable=True)   # Image optional (file)     
     created_at = db.Column(db.DateTime, default=datetime.utcnow)  #Timestamp
-    # user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=True)  # Relationship(foreign key)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)  # Relationship(foreign key)
 
     def __repr__(self):
         return f"<Report {self.title}>"

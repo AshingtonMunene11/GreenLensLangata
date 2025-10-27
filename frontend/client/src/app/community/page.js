@@ -17,10 +17,11 @@ export default function Community() {
   const [posts, setPosts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [showAuthPopup, setShowAuthPopup] = useState(false);
+  const [editingPost, setEditingPost] = useState(null);
 
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
-  const postsPerPage = 3;
+  const postsPerPage = 4;
 
   useEffect(() => {
     console.log("Current user in Community:", user);
@@ -45,7 +46,7 @@ export default function Community() {
   // Create a new post
   const handleCreatePost = async (formData) => {
     if (!user) {
-      setShowAuthPopup(true); 
+      setShowAuthPopup(true);
       return;
     }
 
@@ -53,7 +54,6 @@ export default function Community() {
       const newPost = await createCommunityPost(formData);
       setPosts((prev) => [newPost, ...prev]);
 
-      // Toast for created post successfully
       toast.success("Post created successfully!", {
         duration: 3000,
         position: "top-center",
@@ -68,30 +68,31 @@ export default function Community() {
   };
 
   // Update a post
-const handleUpdatePost = async (id, updatedData) => {
-  if (!user) {
-    setShowAuthPopup(true);
-    return;
-  }
+  const handleUpdatePost = async (id, updatedData) => {
+    if (!user) {
+      setShowAuthPopup(true);
+      return;
+    }
 
-  try {
-    const updatedPost = await updateCommunityPost(id, updatedData);
-    setPosts((prev) =>
-      prev.map((post) => (post.id === id ? { ...post, ...updatedPost } : post))
-    );
+    try {
+      const updatedPost = await updateCommunityPost(id, updatedData);
+      setPosts((prev) =>
+        prev.map((post) => (post.id === updatedPost.id ? updatedPost : post))
+      );
 
-    toast.success("Post updated successfully!", {
-      duration: 3000,
-      position: "top-center",
-    });
-  } catch (error) {
-    console.error("Error updating post:", error);
-    toast.error("Failed to update post. Please try again.", {
-      duration: 3000,
-      position: "top-center",
-    });
-  }
-};
+      setEditingPost(null);
+      toast.success("Post updated successfully!", {
+        duration: 3000,
+        position: "top-center",
+      });
+    } catch (error) {
+      console.error("Error updating post:", error);
+      toast.error("Failed to update post. Please try again.", {
+        duration: 3000,
+        position: "top-center",
+      });
+    }
+  };
 
   // Delete post
   const handleDeletePost = async (id) => {
@@ -103,7 +104,9 @@ const handleUpdatePost = async (id, updatedData) => {
       toast.success("Post deleted successfully!", { duration: 3000 });
     } catch (error) {
       console.error("Error deleting post:", error);
-      toast.error("Failed to delete post. Please try again.", { duration: 3000 });
+      toast.error("Failed to delete post. Please try again.", {
+        duration: 3000,
+      });
     }
   };
 
@@ -112,6 +115,29 @@ const handleUpdatePost = async (id, updatedData) => {
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
   const currentPosts = posts.slice(indexOfFirstPost, indexOfLastPost);
 
+  // Handle clicking a post from Recent Posts sidebar
+  const handleRecentPostClick = (postId) => {    
+    const postIndex = posts.findIndex((post) => post.id === postId);    
+    if (postIndex === -1) return;     
+    const pageNumber = Math.ceil((postIndex + 1) / postsPerPage);    
+    setCurrentPage(pageNumber);
+    
+    setTimeout(() => {
+      const postElement = document.getElementById(`post-${postId}`);
+      if (postElement) {
+        const headerOffset = 120;
+        const elementPosition = postElement.getBoundingClientRect().top;
+        const offsetPosition = window.scrollY + elementPosition - headerOffset;
+        
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: "smooth",
+        });
+      }
+    }, 100);
+  };
+
+  //  Preloader
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#FAFCF1]">
@@ -122,7 +148,7 @@ const handleUpdatePost = async (id, updatedData) => {
 
   return (
     <div className="min-h-screen flex flex-col bg-[#FAFCF1]">
-      <Toaster /> 
+      <Toaster />
       <Navbar />
 
       {/* Hero Section */}
@@ -132,22 +158,31 @@ const handleUpdatePost = async (id, updatedData) => {
             Share your environmental stories
           </h1>
           <p className="text-lg text-[#112C23] max-w-2xl">
-            Report issues, celebrate green efforts, and inspire change in Lang'ata.
+            Report issues, celebrate green efforts and inspire change in
+            Lang'ata.
           </p>
         </div>
       </section>
 
-      {/* Create Post Form */}
+      {/* Create and Update Post Form */}
       <section className="pt-4 pb-16">
         <div className="max-w-7xl mx-auto px-6">
           <div className="rounded-[35px] p-8 md:p-12 bg-[#112C23]">
             <h2 className="text-2xl font-semibold mb-8 text-white text-center">
-              Create New Post
+              {editingPost ? "Update Post" : "Create New Post"}
             </h2>
 
-            <CommunityForm onSubmit={handleCreatePost} />
+            <CommunityForm
+              key={editingPost ? editingPost.id : "create-form"}
+              onSubmit={
+                editingPost
+                  ? (data) => handleUpdatePost(editingPost.id, data)
+                  : handleCreatePost
+              }
+              editingPost={editingPost}
+              onCancelEdit={() => setEditingPost(null)}
+            />
 
-            {/* Show AuthPopup if user is not logged in */}
             {showAuthPopup && (
               <AuthPopup
                 onClose={() => setShowAuthPopup(false)}
@@ -159,17 +194,16 @@ const handleUpdatePost = async (id, updatedData) => {
         </div>
       </section>
 
-      {/* Main content  */}
+      {/* Main community blog section */}
       <section className="pb-16">
         <div className="max-w-7xl mx-auto px-6">
-          <div className="flex gap-8">
-            {/* Main Blog Posts Area */}
-            <main className="flex-1 w-full lg:pr-6">
-              
+          <div className="flex flex-col lg:flex-row gap-8">
+            {/* Main Posts List*/}
+            <main className="w-full lg:flex-1 lg:min-w-0">
               <CommunityPostsList
                 posts={currentPosts}
                 currentUserId={user?.id}
-                onEdit={() => {}}
+                onEdit={(post) => setEditingPost(post)}
                 onDelete={handleDeletePost}
               />
 
@@ -184,10 +218,15 @@ const handleUpdatePost = async (id, updatedData) => {
                 </div>
               )}
             </main>
-            
-            {/* Recent Posts */}
-            <aside className="w-full lg:w-[400px] lg:shrink-0">
-              <RecentPosts posts={posts.slice(0, 5)} />
+
+            {/* Recent Post */}
+            <aside className="hidden lg:block lg:w-[400px] lg:shrink-0">
+              <div className="sticky top-24">
+                <RecentPosts 
+                  posts={posts.slice(0, 5)} 
+                  onPostClick={handleRecentPostClick}
+                />
+              </div>
             </aside>
           </div>
         </div>

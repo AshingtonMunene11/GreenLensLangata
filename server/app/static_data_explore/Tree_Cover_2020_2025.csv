@@ -1,0 +1,9 @@
+system:index,Polygon_Name,Tree_Cover_%,Year,.geo
+1_0,Langata Zone 01,8.279042747208772,2020,"{""type"":""MultiPoint"",""coordinates"":[]}"
+1_1,Karen Polygon,76.80919767606508,2020,"{""type"":""MultiPoint"",""coordinates"":[]}"
+1_2,Lavington-Kilimani Zone,33.120673246806675,2020,"{""type"":""MultiPoint"",""coordinates"":[]}"
+1_3,DandoraNjiru Zone,5.055915323335103,2020,"{""type"":""MultiPoint"",""coordinates"":[]}"
+2_0,Langata Zone 01,12.386930496943444,2025,"{""type"":""MultiPoint"",""coordinates"":[]}"
+2_1,Karen Polygon,81.77052745398449,2025,"{""type"":""MultiPoint"",""coordinates"":[]}"
+2_2,Lavington-Kilimani Zone,34.00257145311093,2025,"{""type"":""MultiPoint"",""coordinates"":[]}"
+2_3,DandoraNjiru Zone,5.4810204049250295,2025,"{""type"":""MultiPoint"",""coordinates"":[]}"

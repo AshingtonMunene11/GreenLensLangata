@@ -121,15 +121,19 @@ def update_report(id):
     report = Report.query.get(id)
     if not report:
         return jsonify({"error": "Post not found"}), 404
-
     data = request.form
-    report.title = data.get("title", report.title)
-    report.description = data.get("description", report.description)
-    report.location = data.get("location", report.location)
+    
+    # Update fields if provided
+    if data.get("title"):
+        report.title = data.get("title")
+    if data.get("description"):
+        report.description = data.get("description")
+    if data.get("location"):
+        report.location = data.get("location")
 
     if "image_file" in request.files:
         file = request.files["image_file"]
-        if file.filename:
+        if file and file.filename:
             filename = secure_filename(file.filename)
             filepath = os.path.join(UPLOAD_FOLDER, filename)
             file.save(filepath)
@@ -138,7 +142,24 @@ def update_report(id):
         report.image_url = data.get("image_url")
 
     db.session.commit()
-    return jsonify({"message": "Post updated successfully"}), 200
+
+    # Return updated post 
+    user = User.query.get(report.user_id)
+    username = user.username if user else "Anonymous"
+
+    return jsonify({
+        "message": "Post updated successfully",
+        "report": {
+            "id": report.id,
+            "title": report.title,
+            "description": report.description,
+            "location": report.location,
+            "image_url": report.image_url,
+            "user_id": report.user_id,
+            "username": username,
+            "created_at": report.created_at.isoformat() if report.created_at else None,
+        }
+    }), 200
 
 
 # DELETE a report

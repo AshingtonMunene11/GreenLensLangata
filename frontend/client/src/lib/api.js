@@ -100,17 +100,47 @@ export async function updateCommunityPost(postId, updatedData, token = null) {
   try {
     const url = `${API_BASE_URL}/reports/${postId}`;
     console.log("Updating post:", url);
+    console.log("Update data:", updatedData);
+
+    const formData = new FormData();
     
+    Object.keys(updatedData).forEach(key => {
+      const value = updatedData[key];
+      if (value !== null && value !== undefined && value !== "") {
+        if (value instanceof File) {
+          formData.append(key, value);
+          console.log(`Added ${key}: [File] ${value.name}`);
+        } else {
+          formData.append(key, String(value));
+          console.log(`Added ${key}:`, value);
+        }
+      }
+    });
+
     const res = await fetch(url, {
       method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      },
-      body: JSON.stringify(updatedData),
+      body: formData, 
+      ...(token ? { headers: { Authorization: `Bearer ${token}` } } : {}),
     });
 
     const data = await handleResponse(res);
+
+    if (data?.report) {
+      data.report.image_url =
+        data.report.image_url && !data.report.image_url.startsWith("http")
+          ? `${API_BASE_URL}/static/uploads/${data.report.image_url}`
+          : data.report.image_url;
+      return data.report;
+    }
+
+    if (data?.id) {
+      data.image_url =
+        data.image_url && !data.image_url.startsWith("http")
+          ? `${API_BASE_URL}/static/uploads/${data.image_url}`
+          : data.image_url;
+      return data;
+    }
+
     return data;
   } catch (error) {
     console.error("Error updating report:", error);

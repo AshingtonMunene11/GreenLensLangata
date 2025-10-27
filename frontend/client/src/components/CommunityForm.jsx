@@ -1,14 +1,15 @@
 "use client";
 
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect, useRef } from "react";
 import { UserContext } from "../context/UserContext";
 
-export default function CommunityForm({ onSubmit }) {
-  const { user } = useContext(UserContext); 
-  
+export default function CommunityForm({ onSubmit, editingPost, onCancelEdit }) {
+  const { user } = useContext(UserContext);
+  const formRef = useRef(null);
+
   const [formData, setFormData] = useState({
     title: "",
-    photo: "",
+    photo: "", 
     photoType: "url",
     location: "",
     description: "",
@@ -17,9 +18,33 @@ export default function CommunityForm({ onSubmit }) {
 
   const maxChars = 120;
 
+  // Prefill form when editing a post 
+  useEffect(() => {
+    if (editingPost) {
+      setFormData({
+        title: editingPost.title || "",
+        photo: editingPost.image_url || "", 
+        photoType: editingPost.image_url ? "url" : "file",
+        location: editingPost.location || "",
+        description: editingPost.description || "",
+      });
+
+      
+      setTimeout(() => {
+        if (formRef.current) {
+          const headerOffset = 150;
+          const elementPosition = formRef.current.getBoundingClientRect().top;
+          const offsetPosition =
+            window.scrollY + elementPosition - headerOffset;
+          window.scrollTo({ top: offsetPosition, behavior: "smooth" });
+        }
+      }, 100);
+    }
+  }, [editingPost]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!formData.title || !formData.location || !formData.description) {
       alert("Please fill all required fields before submitting.");
       return;
@@ -37,18 +62,26 @@ export default function CommunityForm({ onSubmit }) {
         title: formData.title,
         description: formData.description,
         location: formData.location,
-        user_id: user?.id || null, 
+        user_id: user?.id || null,
         username: user?.username || user?.name || "Anonymous",
       };
 
       if (formData.photoType === "url" && formData.photo) {
         submitData.image_url = formData.photo;
-      } else if (formData.photoType === "file" && formData.photo instanceof File) {
+      } else if (
+        formData.photoType === "file" &&
+        formData.photo instanceof File
+      ) {
         submitData.image_file = formData.photo;
+      }
+
+      if (editingPost?.id) {
+        submitData.id = editingPost.id;
       }
 
       await onSubmit(submitData);
 
+      // Reset form after submission
       setFormData({
         title: "",
         photo: "",
@@ -57,6 +90,9 @@ export default function CommunityForm({ onSubmit }) {
         description: "",
       });
 
+      if (editingPost && onCancelEdit) {
+        onCancelEdit();
+      }
     } catch (error) {
       console.error("Error in form submission:", error);
       alert(`Error: ${error.message}`);
@@ -73,6 +109,7 @@ export default function CommunityForm({ onSubmit }) {
       location: "",
       description: "",
     });
+    if (onCancelEdit) onCancelEdit();
   };
 
   const langataLocations = [
@@ -89,7 +126,7 @@ export default function CommunityForm({ onSubmit }) {
   ];
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form ref={formRef} onSubmit={handleSubmit} className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
           <label className="block text-white text-sm font-normal mb-2">
@@ -120,13 +157,11 @@ export default function CommunityForm({ onSubmit }) {
                 setFormData({
                   ...formData,
                   photoType: e.target.value,
-                  photo: "",
+                  photo: "", 
                 })
               }
               disabled={isSubmitting}
-              className="bg-[#112C23] border-2 border-white/90 rounded-full px-4 py-2 text-white text-sm 
-      focus:outline-none focus:border-[#86EE92] cursor-pointer"
-            >
+              className="bg-[#112C23] border-2 border-white/90 rounded-full px-4 py-2 text-white text-sm focus:outline-none focus:border-[#86EE92] cursor-pointer">
               <option value="url" className="bg-[#112C23] text-white">
                 Image URL
               </option>
@@ -139,7 +174,7 @@ export default function CommunityForm({ onSubmit }) {
               <input
                 type="text"
                 placeholder="Paste image URL"
-                value={formData.photo || ""}
+                value={formData.photo || ""} 
                 onChange={(e) =>
                   setFormData({ ...formData, photo: e.target.value })
                 }
@@ -154,7 +189,7 @@ export default function CommunityForm({ onSubmit }) {
                 onChange={(e) =>
                   setFormData({
                     ...formData,
-                    photo: e.target.files?.[0] || null,
+                    photo: e.target.files?.[0] || "",
                   })
                 }
                 disabled={isSubmitting}
@@ -222,7 +257,13 @@ export default function CommunityForm({ onSubmit }) {
           disabled={isSubmitting}
           className="bg-[#86EE92] hover:bg-green-500 text-[#112C23] px-8 py-3 rounded-[50.5px] font-semibold text-sm transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {isSubmitting ? "SUBMITTING..." : "SUBMIT"}
+          {isSubmitting
+            ? editingPost
+              ? "UPDATING..."
+              : "SUBMITTING..."
+            : editingPost
+            ? "UPDATE"
+            : "SUBMIT"}
         </button>
         <button
           type="button"

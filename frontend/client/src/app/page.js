@@ -179,7 +179,7 @@ export default function HomePage() {
             <div className="absolute left-[10%] top-[40%] flex items-center gap-1 text-sm md:text-base">
               <span className="text-white font-semibold">85%</span>
               <svg
-                className="w-4 h-4 text-white rotate-[180deg]"
+                className="w-4 h-4 text-white rotate-180"
                 fill="none"
                 stroke="currentColor"
                 strokeWidth="2"

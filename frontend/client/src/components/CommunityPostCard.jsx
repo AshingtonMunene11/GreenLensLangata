@@ -30,7 +30,7 @@ export default function CommunityPostCard({
 
   const formattedDate = formatDate(created_at);
 
-  //Handle image url and
+  // Handle image URL 
   const imageSrc = image_url
     ? image_url.startsWith("http")
       ? image_url
@@ -41,7 +41,9 @@ export default function CommunityPostCard({
   const isOwner = currentUserId && currentUserId === user_id;
 
   return (
-    <div className="bg-[#0F2A21] rounded-[35px] overflow-hidden shadow-xl w-full mb-10">
+    <div 
+    id={`post-${id}`}
+    className="bg-[#0F2A21] rounded-[35px] overflow-hidden shadow-xl w-full mb-10 scroll-mt-32">
       {/* Header Section */}
       <div className="p-8 pb-4">
         <div className="flex justify-between items-start">
@@ -56,7 +58,7 @@ export default function CommunityPostCard({
               <button
                 onClick={() => onEdit?.(post)}
                 aria-label="Edit post"
-                className="hover:opacity-80 transition"
+                className="hover:opacity-80 transition hover:bg-green-500"
               >
                 <Image
                   src="/edit.svg"
@@ -71,7 +73,7 @@ export default function CommunityPostCard({
               <button
                 onClick={() => onDelete?.(id)}
                 aria-label="Delete post"
-                className="hover:opacity-80 transition"
+                className="hover:opacity-80 transition hover:bg-orange-600"
               >
                 <Image
                   src="/delete-icon.svg"
@@ -86,7 +88,7 @@ export default function CommunityPostCard({
         </div>
 
         {/* Location and Date */}
-        <div className="flex gap-3 mt-5 flex-wrap">
+        <div className="flex gap-3 mt-0 flex-wrap">
           {location && (
             <div className="flex items-center gap-2 border border-white/80 rounded-full px-5 py-2 text-white text-[15px]">
               <MapPin size={16} className="text-[#86EE92]" />
@@ -105,7 +107,7 @@ export default function CommunityPostCard({
       {/* Image Section */}
       {imageSrc && (
         <div className="px-8 pb-6">
-          <div className="relative w-full h-[480px] rounded-[25px] overflow-hidden">
+          <div className="relative w-full h-90 rounded-[25px] overflow-hidden">
             <img
               src={imageSrc}
               alt={title || "Community post image"}
@@ -119,7 +121,7 @@ export default function CommunityPostCard({
       )}
 
       {/* Footer Section */}
-      <div className="px-8 pb-8">
+      <div className="px-8 pb-8 ">
         <p className="text-white text-[17px] mb-3">
           <span className="font-semibold">Posted by:</span>{" "}
           <span className="font-normal">{username || "Anonymous"}</span>

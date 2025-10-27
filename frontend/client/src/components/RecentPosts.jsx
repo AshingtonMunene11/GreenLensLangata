@@ -1,7 +1,13 @@
 "use client";
 
-export default function RecentPosts({ posts = [] }) {
+export default function RecentPosts({ posts = [], onPostClick }) {
   const recentPosts = posts.slice(0, 5);
+
+  const handlePostClick = (postId) => {
+    if (onPostClick) {
+      onPostClick(postId);
+    }
+  };
 
   return (
     <div className="sticky top-28 bg-[#112C23] rounded-[30px] p-8 shadow-lg w-full">
@@ -14,22 +20,24 @@ export default function RecentPosts({ posts = [] }) {
           recentPosts.map((post) => (
             <div
               key={post.id}
-              className="bg-[#FFFFFF] rounded-[20px] p-5 shadow-sm hover:shadow-lg transition cursor-pointer"
+              onClick={() => handlePostClick(post.id)}
+              className="bg-[#FFFFFF] rounded-[20px] p-5 shadow-sm hover:shadow-lg hover:scale-[1.02] transition-all cursor-pointer"
             >
               <h4 className="text-[#112C23] text-[16px] font-semibold mb-2 line-clamp-2 leading-snug">
                 {post.title}
               </h4>
 
-              <p className="text-sm text-gray-600">
-                Posted by <span className="font-medium">{post.username || "Anonymous"}</span>
+              <p className="text-sm text-[#000000]">
+                {" "}
+                <span className="font-normal">
+                  {post.username || "Anonymous"}
+                </span>
               </p>
             </div>
           ))
         ) : (
           <div className="bg-[#FFFFFF] rounded-2xl p-6 text-center">
-            <p className="text-gray-600 text-sm">
-              No recent posts yet
-            </p>
+            <p className="text-gray-600 text-sm">No recent posts yet</p>
           </div>
         )}
       </div>

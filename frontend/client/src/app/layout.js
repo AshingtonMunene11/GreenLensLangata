@@ -1,6 +1,7 @@
 import "./globals.css";
 import { Inter } from "next/font/google";
 import { UserProvider } from "@/context/UserContext";
+import FloatingChatButton from "@/components/FloatingChatButton";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -25,6 +26,7 @@ export default function RootLayout({ children }) {
       <body className={inter.className}>
         <UserProvider>
           {children}
+          <FloatingChatButton />
         </UserProvider>
       </body>
     </html>

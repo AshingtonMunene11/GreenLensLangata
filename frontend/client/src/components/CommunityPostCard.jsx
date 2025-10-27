@@ -58,7 +58,7 @@ export default function CommunityPostCard({
               <button
                 onClick={() => onEdit?.(post)}
                 aria-label="Edit post"
-                className="hover:opacity-80 transition hover:bg-green-500"
+                className="hover:opacity-80 transition"
               >
                 <Image
                   src="/edit.svg"
@@ -73,7 +73,7 @@ export default function CommunityPostCard({
               <button
                 onClick={() => onDelete?.(id)}
                 aria-label="Delete post"
-                className="hover:opacity-80 transition hover:bg-orange-600"
+                className="hover:opacity-80 transition"
               >
                 <Image
                   src="/delete-icon.svg"

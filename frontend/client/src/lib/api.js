@@ -20,8 +20,25 @@ async function handleResponse(response) {
     throw new Error(message);
   }
 
+  if (Array.isArray(data)) {
+    data = data.map((item) => ({
+      ...item,
+      image_url:
+        item.image_url && !item.image_url.startsWith("http")
+          ? `${API_BASE_URL}/static/uploads/${item.image_url}`
+          : item.image_url,
+    }));
+  } else if (data?.report) {
+    data.report.image_url =
+      data.report.image_url && !data.report.image_url.startsWith("http")
+        ? `${API_BASE_URL}/static/uploads/${data.report.image_url}`
+        : data.report.image_url;
+  }
+
   return data;
 }
+
+// Get all community posts
 
 export async function getCommunityPosts() {
   try {
@@ -40,6 +57,7 @@ export async function getCommunityPosts() {
   }
 }
 
+// create community post
 export async function createCommunityPost(data) {
   try {
     const url = `${API_BASE_URL}/reports`;
@@ -77,6 +95,7 @@ export async function createCommunityPost(data) {
   }
 }
 
+// Update community post
 export async function updateCommunityPost(postId, updatedData, token = null) {
   try {
     const url = `${API_BASE_URL}/reports/${postId}`;
@@ -99,6 +118,7 @@ export async function updateCommunityPost(postId, updatedData, token = null) {
   }
 }
 
+// Delete community post
 export async function deleteCommunityPost(postId, token = null) {
   try {
     const url = `${API_BASE_URL}/reports/${postId}`;

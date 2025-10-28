@@ -7,6 +7,7 @@ import Link from "next/link";
 import AuthNavbar from "../../components/AuthNavbar";
 import { Eye, EyeOff } from "lucide-react";
 import { UserContext } from "@/context/UserContext";
+import toast, { Toaster } from "react-hot-toast";
 
 
 export default function Login() {
@@ -20,11 +21,11 @@ export default function Login() {
     setFormData({ ...formData, [e.target.id]: e.target.value });
   };
 
-  // useEffect(() => {
-  // const token = localStorage.getItem("token");
-  // if (token) {
-  //   router.push("/");
-  // }}, []);
+  useEffect(() => {
+  const token = localStorage.getItem("token");
+  if (token) {
+    router.push("/");
+  }}, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -50,7 +51,12 @@ export default function Login() {
 
         setUser(data.user); // to update the logged-in user info
 
-        setMessage("Login successful!");
+        toast.success("Login successful!", {
+          duration: 3000,
+          position: "top-center",
+        });
+
+        // setMessage("Login successful!");
         setTimeout(() => router.push("/"), 1500);     //redirect to our landing page after use amelogin after signup
       } else {
         setMessage(data.message || "Invalid credentials");
@@ -65,6 +71,9 @@ export default function Login() {
       className="min-h-screen flex items-center justify-center bg-cover bg-center"
       style={{ backgroundImage: "url(/backgroundsample1.png)" }}
     >
+      {/* Toast messages */}
+      <Toaster position="top-center rounded-full" reverseOrder={false} />
+
       <div className="bg-[#112C23] p-8 rounded-lg shadow-lg w-full max-w-md text-white">
         {/* <div className="animate-slide-in-right border border-red-500 bg-white"> */}
         <div className="fixed top-0 left-0 w-full z-50 bg-transparent text-white">

@@ -79,3 +79,6 @@ dist/
 *.egg-info/
 .eggs/
 MANIFEST
+
+# Static uploads
+server/app/static/uploads/

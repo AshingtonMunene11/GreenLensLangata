@@ -1,19 +1,34 @@
+"use client";
+
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import Link from "next/link";
 import "./globals.css";
+import { PieChart, Pie, Cell } from "recharts";
 
 export default function HomePage() {
+  // Pie chart data
+  const data = [
+  { name: "Tree Cover", value: 21.3, color: "#1ba655" },   
+  { name: "Built-Up", value: 23, color: "#C49A6C" },       
+  { name: "Grass Land", value: 30.7, color: "#5daa87" },   
+  { name: "Water Cover", value: 0.6, color: "#1b69a6" },   
+  { name: "Other", value: 24.4, color: "#8e9eab" },        
+];
+
+
   return (
     <main className="bg-[#FAFCF1] min-h-screen text-[#112C23] font-sans">
       <Navbar />
+
       {/* Hero Section */}
       <section className="relative flex items-center justify-center text-center">
         <img
           src="/home_image.svg"
           alt="Hero background"
-          className="w-full h-[735] object-cover"
+          className="w-full h-[735px] object-cover"
         />
+        <div className="absolute inset-0 bg-black/16"></div>
         <div className="absolute inset-0 flex flex-col items-center justify-center">
           <h1 className="font-semibold text-[90px] leading-[1.1] max-w-[1367px] text-white">
             JOIN A MISSION <br /> MAKE A CHANGE
@@ -55,7 +70,9 @@ export default function HomePage() {
               <p className="text-[16px] mb-2 flex-1">
                 Beneath the canopy, a quiet crisis brews. forests once...
               </p>
-              <p className="text-[14px] mb-4 font-medium text-[#112C23]">By Igamba Dais</p>
+              <p className="text-[14px] mb-4 font-medium text-[#112C23]">
+                By Igamba Dais
+              </p>
               <Link href="/community">
                 <button className="bg-[#ffffff] text-[#515151] text-[16px] font-medium w-[140px] py-2 rounded-full hover:opacity-90 transition cursor-pointer">
                   Read More
@@ -126,8 +143,7 @@ export default function HomePage() {
           Get area coverage insights
         </h2>
 
-        <div className="bg-[#112C23] text-white rounded-[25px] p-8 flex flex-col md:flex-row justify-between items-center relative">
-
+        <div className="bg-[#112C23] text-white rounded-[25px] p-8 flex flex-col relative">
           {/* Explore button */}
           <Link href="/explore">
             <button className="absolute top-6 right-6 bg-white text-[#112C23] rounded-full px-6 py-1.5 font-semibold text-[12px] md:text-[14px] hover:bg-gray-200 transition cursor-pointer">
@@ -135,85 +151,58 @@ export default function HomePage() {
             </button>
           </Link>
 
-          {/* Bar Chart Area*/}
-          <div className="flex-1 w-full md:w-2/3 flex flex-col justify-center">
-            {/* Title */}
-            <h3 className="text-[22px] md:text-[24px] font-light mb-4">
-              Overview Analysis : Lang’ata
+          {/* Title  */}
+          <div className="absolute top-6 left-8">
+            <h3 className="text-[22px] md:text-[24px] font-light">
+              Nairobi Coverage Analysis
             </h3>
-
-            {/* Tree Cover */}
-            <div className="inline-block border border-[#FFFFFF] rounded-full px-3 py-1 mb-6 w-fit">
-              <p className="text-sm md:text-base text-[#FFFFFF] font-normal">
-                Tree Cover Sq:
-              </p>
-            </div>
-
-            {/* Bar Chart */}
-            <div className="relative w-full h-[260px] md:h-[280px]">
-              <div className="absolute left-8 top-2 bottom-8 w-px bg-gray-600"></div>
-              <div className="absolute bottom-8 left-8 right-8 h-px bg-gray-600"></div>
-              <div className="absolute bottom-2 left-8 right-8 flex justify-between text-[12px] md:text-[14px] text-[#FFFFFF]">
-                <span>2021</span>
-                <span>2022</span>
-                <span>2023</span>
-                <span>2024</span>
-                <span>2025</span>
-              </div>
-              <p className="text-gray-500 text-sm absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-                [ Line Chart Will Appear Here ]
+            <div className="inline-block border border-[#FFFFFF] rounded-full px-2 py-1 mt-2">
+              <p className="text-[12px] md:text-[14px] text-[#FFFFFF] font-normal">
+                Recent Analysis
               </p>
             </div>
           </div>
 
-          {/* Pie Chart */}
-          <div className="flex-1 w-full md:w-1/3 mt-10 md:mt-0 flex flex-col items-center justify-center relative">
-            <img
-              src="/piechart_home.svg"
-              alt="Pie chart"
-              className="w-[220px] md:w-[260px] object-contain"
-            />
-
-            {/* 85% (left side arrow) */}
-            <div className="absolute left-[10%] top-[40%] flex items-center gap-1 text-sm md:text-base">
-              <span className="text-white font-semibold">85%</span>
-              <svg
-                className="w-4 h-4 text-white rotate-[180deg]"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                viewBox="0 0 24 24"
+          {/* Donut Pie Chart */}
+          <div className="flex justify-center items-center w-full pt-20">
+            <PieChart width={620} height={400}>
+              <Pie
+                data={[
+                  { name: "Tree Cover", value: 21.3, color: "#1ba655" }, 
+                  { name: "Built-Up", value: 23, color: "#C49A6C" },
+                  { name: "Grass Land", value: 30.7, color: "#5daa87" },
+                  { name: "Water Cover", value: 0.6, color: "#1b69a6" },
+                  { name: "Other", value: 24.4, color: "#8e9eab" },
+                ]}
+                dataKey="value"
+                nameKey="name"
+                innerRadius={90}
+                outerRadius={140}
+                startAngle={90}
+                endAngle={-270}
+                labelLine={true}
+                label={({ name, value }) => `${name}: ${value}%`}
+                stroke="none"
+                paddingAngle={2}
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M9 5l7 7-7 7"
-                />
-              </svg>
-            </div>
+                {["#1ba655", "#C49A6C", "#5daa87", "#1b69a6", "#8e9eab"].map(
+                  (color, index) => (
+                    <Cell key={index} fill={color} />
+                  )
+                )}
+              </Pie>
+            </PieChart>
 
-            {/* 15% (right side arrow pointing inward) */}
-            <div className="absolute right-[10%] bottom-[30%] flex items-center gap-1 text-sm md:text-base">
-              <svg
-                className="w-4 h-4 text-white"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M9 5l7 7-7 7"
-                />
-              </svg>
-              <span className="text-white font-semibold">15%</span>
+            {/* Center Text */}
+            <div className="absolute text-center">
+              <p className="text-[28px] font-semibold text-white">100%</p>
+              <p className="text-[14px] text-gray-300">Total Coverage</p>
             </div>
           </div>
         </div>
       </section>
+
       <Footer />
     </main>
   );
 }
-

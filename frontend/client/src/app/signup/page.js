@@ -6,7 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import AuthNavbar from "../../components/AuthNavbar";
 import { Eye, EyeOff } from "lucide-react";
-
+import toast, { Toaster } from "react-hot-toast";
 
 export default function Signup() {
   const [formData, setFormData] = useState({
@@ -15,7 +15,6 @@ export default function Signup() {
     password: "",
   });
 
-  
   const [message, setMessage] = useState("");
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
@@ -49,7 +48,12 @@ export default function Signup() {
       //   window.location.href = "/login";
 
       if (res.ok) {
-        setMessage("Registration successful!");
+        toast.success("Registration successful!", {
+          duration: 3000,
+          position: "top-center",
+        });
+
+        // setMessage("Registration successful!");
         setFormData({ username: "", email: "", password: "" });
         setTimeout(() => router.push("/login"), 1500);
       } else {
@@ -68,6 +72,9 @@ export default function Signup() {
       className="min-h-screen flex items-center justify-center bg-cover bg-center"
       style={{ backgroundImage: "url(/backgroundsample1.png)" }}
     >
+      {/* Ttoast messages */}
+      <Toaster position="top-center" reverseOrder={false} />
+
       <div className="bg-[#112C23] p-8 rounded-lg shadow-lg w-full max-w-md text-white">
         {/* <div className="animate-slide-in-right border border-red-500 bg-white"> */}
         <AuthNavbar />
@@ -133,13 +140,13 @@ export default function Signup() {
           </div>
 
           <div className="flex items-center justify-between">
-            <label className="flex items-center">
-              <input
-                type="checkbox"
-                className="h-3 w-3 text-white focus:ring-white border-white rounded"
-              />
-              <span className="ml-2 text-sm">
-                I agree to Terms & Conditions
+            <label className="flex items-center space-x-2">
+              <input type="checkbox" required />
+              <span>
+                I agree to the{" "}
+                <Link href="/terms" className="text-white underline">
+                  Terms & Conditions
+                </Link>
               </span>
             </label>
             {/* <a href="#" className="text-sm underline">Forgot Password?</a> */}

@@ -1,11 +1,7 @@
 from app import db
-
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy_serializer import SerializerMixin
-
 from sqlalchemy.orm import validates
-
-# db = SQLAlchemy()
 
 
 class DevelopmentPlan(db.Model, SerializerMixin):
@@ -24,18 +20,15 @@ class DevelopmentPlan(db.Model, SerializerMixin):
     polygon_id = db.Column(db.Integer, db.ForeignKey(
         'polygons.id'), nullable=False)
 
-    # centroid_lat = db.Column(db.Float, nullable=False)
-    # centroid_long = db.Column(db.Float, nullable=False)
-
-    ai_results = db.Column(db.Text, nullable=False)
-
-    # rships
+    ai_results = db.Column(db.Text, nullable=True)
 
     area = db.relationship(
         'Area', back_populates='development_plans',)
     # user = db.relationship(
     #     'User', back_populates='development_plans', cascade='all, delete-orphan')
     polygon = db.relationship('Polygon', back_populates='development_plans')
+    analysis = db.relationship(
+        "PolygonAnalysis", back_populates="development_plan", uselist=False)
 
     serialize_rules = ('-area.station',)
 
@@ -60,7 +53,3 @@ class DevelopmentPlan(db.Model, SerializerMixin):
         if existing and existing.id != getattr(self, "id", None):
             raise ValueError("Development plan title must be unique")
         return title.strip()
-    
-
-
-

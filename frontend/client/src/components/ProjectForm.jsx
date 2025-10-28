@@ -26,6 +26,13 @@ export default function ProjectForm({
       return;
     }
 
+    // if (projects?.some((p) => p.title === values.title)) {
+    //   alert(
+    //     "A project with this title already exists. Please choose a different title."
+    //   );
+    //   return;
+    // }
+
     setIsSubmitting(true);
 
     const { title, description, type, areaSize } = values;
@@ -48,10 +55,9 @@ export default function ProjectForm({
         body: JSON.stringify(formData),
       });
 
-      if (!response.ok) throw new Error("Failed to submit project");
-
       const data = await response.json();
-      console.log("Server response:", data);
+
+      if (!response.ok) throw new Error("Failed to submit project");
 
       setSubmittedPlan(data);
       if (onPlanCreated) onPlanCreated(data);
@@ -66,44 +72,11 @@ export default function ProjectForm({
     }
   };
 
-  const handleAnalyze = async (planId) => {
-    if (!submittedPlan?.id) {
-      alert("Please submit a project first.");
-      return;
-    }
-
-    setIsAnalyzing(true);
-
-    try {
-      const response = await fetch(
-        `http://127.0.0.1:5000/development_plans/analyze/${planId}`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ development_plan_id: planId }),
-        }
-      );
-
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.message || "Analysis failed");
-
-      console.log("Analysis result:", data);
-      setAnalysisResult(data);
-      alert("Analysis complete!");
-    } catch (error) {
-      console.error("Analysis error:", error);
-      alert(error.message || "There was a problem with the analysis.");
-    } finally {
-      setIsAnalyzing(false);
-    }
-  };
-
   return (
     <div className="w-428 mx-auto bg-[#112C23] p-6 rounded-3xl mt-6 border border-gray-200">
       <h2 className="text-[28px] text-white text-center mt-5 mb-10 font-semibold">
         What is your project Information?
       </h2>
-
       <Formik initialValues={initialValues} onSubmit={handleSubmit}>
         <Form style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
           <label>
@@ -122,8 +95,8 @@ export default function ProjectForm({
             <Field
               name="areaSize"
               type="number"
-              step="0.01"
-              placeholder="e.g. 2.5"
+              step="0.001"
+              placeholder="1km2 = 1000000m2 (max 3 decimal places)"
               style={{ width: "100%", padding: "8px" }}
               disabled={disabled}
             />
@@ -173,8 +146,7 @@ export default function ProjectForm({
           </button>
         </Form>
       </Formik>
-
-      {submittedPlan && (
+      {/* {submittedPlan && (
         <button
           onClick={() => handleAnalyze(submittedPlan.id)}
           style={{
@@ -194,27 +166,38 @@ export default function ProjectForm({
       )}
 
       {/* Spinner while analyzing */}
-      {isAnalyzing && (
+      {/* {isAnalyzing && (
         <div className="mt-4 flex justify-center items-center">
           <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-yellow-500"></div>
-          <span className="ml-2 text-yellow-600 font-medium">Analyzing...</span>
+          <span className="ml-2 text-yellow-600 font-medium"></span>
         </div>
-      )}
-
-      {/* Analysis Results */}
-      {analysisResult &&
-        typeof analysisResult.built_up_area === "number" &&
-        typeof analysisResult.flora_area === "number" &&
-        typeof analysisResult.built_up_pct === "number" &&
-        typeof analysisResult.flora_pct === "number" && (
-          <div className="mt-4 bg-white rounded-lg p-4 text-black">
-            <h3 className="text-lg font-bold mb-2">Analysis Results</h3>
-            <p>Built-up Area: {analysisResult.built_up_area.toFixed(2)} km²</p>
-            <p>Flora Area: {analysisResult.flora_area.toFixed(2)} km²</p>
-            <p>Built-up %: {analysisResult.built_up_pct.toFixed(2)}%</p>
-            <p>Flora %: {analysisResult.flora_pct.toFixed(2)}%</p>
-          </div>
-        )}
+      )} */}{" "}
+      {/* {analysisResult && (
+        <div className="mt-4 bg-white rounded-lg p-4 text-black">
+          <h3 className="text-lg font-bold mb-2">Analysis Results</h3>
+          {typeof analysisResult.built_up_area === "number" && (
+            <p>Built-up Area: {analysisResult.built_up_area.toFixed(7)} km²</p>
+          )}
+          {typeof analysisResult.flora_area === "number" && (
+            <p>Flora Area: {analysisResult.flora_area.toFixed(7)} km²</p>
+          )}
+          {typeof analysisResult.built_up_pct === "number" && (
+            <p>Built-up: {analysisResult.built_up_pct.toFixed(2)}%</p>
+          )}
+          {typeof analysisResult.flora_pct === "number" && (
+            <p>Flora: {analysisResult.flora_pct.toFixed(2)}%</p>
+          )}
+          {analysisResult.status && (
+            <div
+              className={`inline-block px-3 py-1 rounded-full text-white font-semibold ${
+                analysisResult.status === "Pass" ? "bg-green-500" : "bg-red-500"
+              }`}
+            >
+              {analysisResult.status} */}
+      {/* </div>
+          )} */}
     </div>
+    //   )}
+    // </div>
   );
 }

@@ -6,6 +6,10 @@ from .community_routes import register_community_routes
 from .auth_routes import auth
 from .GEE_Polygon_Analysis_routes import gee_bp
 from .Metrics_routes import metrics_bp
+from . import PolygonPlanAnalysis_routes
+
+
+# PolygonPlanAnalysis_routes.register_routes(app)
 # from app.routes.chat_routes import chat_bp
 # from .chat import chat_bp
 # from .chat_routes import chat_bp

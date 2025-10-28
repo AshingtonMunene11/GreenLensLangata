@@ -26,6 +26,8 @@ class PolygonAnalysis(db.Model, SerializerMixin):
     built_up_pct = db.Column(db.Float, nullable=False)
     flora_pct = db.Column(db.Float, nullable=False)
 
+    status = db.Column(db.String(20), nullable=False, default="Pending")
+
     created_at = db.Column(db.DateTime(timezone=True),
                            server_default=func.now())
 
@@ -52,6 +54,7 @@ class PolygonAnalysis(db.Model, SerializerMixin):
             "flora_pct": self.flora_pct,
             "flora_loss_pct": self.flora_loss_pct,
             "new_built_up_pct": self.new_built_up_pct,
+            "status": self.status,
             "user_id": self.user_id,
             "created_at": self.created_at.isoformat()
         }

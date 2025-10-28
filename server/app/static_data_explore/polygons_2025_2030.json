@@ -1,0 +1,70 @@
+[
+  {
+    "polygon_name": "Langata Zone 01",
+    "metrics": [
+      {
+        "year": 2025,
+        "tree_loss": 12.386930496943444,
+        "temperature": 20.36438376724084,
+        "rainfall": 199.39301225545248
+      },
+      {
+        "year": 2030,
+        "tree_loss": 16.49481824667805,
+        "temperature": 21.819795186032593,
+        "rainfall": 209.3626628682251
+      }
+    ]
+  },
+  {
+    "polygon_name": "Karen Polygon",
+    "metrics": [
+      {
+        "year": 2025,
+        "tree_loss": 81.77052745398449,
+        "temperature": 19.414810619559372,
+        "rainfall": 199.39301225545248
+      },
+      {
+        "year": 2030,
+        "tree_loss": 86.73185723190409,
+        "temperature": 20.868961957705892,
+        "rainfall": 209.3626628682251
+      }
+    ]
+  },
+  {
+    "polygon_name": "Lavington-Kilimani Zone",
+    "metrics": [
+      {
+        "year": 2025,
+        "tree_loss": 34.00257145311093,
+        "temperature": 20.36438376724084,
+        "rainfall": 199.39301225545248
+      },
+      {
+        "year": 2030,
+        "tree_loss": 34.884469659415174,
+        "temperature": 21.819795186032593,
+        "rainfall": 209.3626628682251
+      }
+    ]
+  },
+  {
+    "polygon_name": "DandoraNjiru Zone",
+    "metrics": [
+      {
+        "year": 2025,
+        "tree_loss": 5.4810204049250295,
+        "temperature": 20.45938072204592,
+        "rainfall": 199.39301225545248
+      },
+      {
+        "year": 2030,
+        "tree_loss": 5.906125486514952,
+        "temperature": 21.79261419644922,
+        "rainfall": 209.3626628682251
+      }
+    ]
+  }
+]

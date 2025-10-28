@@ -4,9 +4,9 @@ import { useState } from "react";
 import MapView from "./MapView";
 import ProjectForm from "./ProjectForm";
 
-export default function ProjectPage() {
+export default function ProjectPage({ setSelectedPlan }) {
   const [selectedPolygon, setSelectedPolygon] = useState(null);
-  const [selectedPlan, setSelectedPlan] = useState(null);
+  // const [selectedPlan, setSelectedPlan] = useState(null);
 
   return (
     <div>
@@ -18,6 +18,7 @@ export default function ProjectPage() {
         <ProjectForm
           selectedPolygon={selectedPolygon}
           onPlanCreated={(plan) => setSelectedPlan(plan)}
+          disabled={false}
         />
       </div>
     </div>

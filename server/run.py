@@ -17,7 +17,7 @@ app = create_app()
 # Fix: origins should be a list, and we need to specify methods and headers
 CORS(app,
      origins=["http://localhost:3000"],
-     methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+     methods=["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
      allow_headers=["Content-Type", "Authorization"],
      supports_credentials=True)
 

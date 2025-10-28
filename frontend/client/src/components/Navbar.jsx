@@ -12,6 +12,8 @@ export default function Navbar() {
   const logout = () => {
     setUser(null);
     localStorage.removeItem("user");
+    localStorage.removeItem("token");
+    // window.location.href = "/";
   };
 
   return (

@@ -5,8 +5,8 @@ import { UserProvider } from "../context/UserContext";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-  title: "GreenLens - Lang'ata",
-  description: "AI-powered sustainability insights for Lang'ata",
+  title: "GreenLens - Nairobi",
+  description: "AI-powered sustainability insights for Nairobi",
   manifest: "/site.webmanifest",
   icons: {
     icon: "/favicon.ico",

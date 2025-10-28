@@ -2,6 +2,7 @@ from flask import Flask
 from app.config import Config
 from app.extensions import db, migrate, jwt, cors
 from app.models import DevelopmentPlan, Area, Polygon, Report
+# from app.routes.chat_routes import chat_bp
 
 def create_app():
     app = Flask(__name__)
@@ -12,8 +13,8 @@ def create_app():
     migrate.init_app(app, db)
     jwt.init_app(app)
     cors.init_app(app, resources={r"/*": {"origins": "http://localhost:3000"}})
+    # cors.init_app(app, resources={r"/api/*": {"origins": ["http://localhost:3000", "https://greenlens.ke"]}})
 
-    # Register blueprints via route modules
     from app.routes import (
         register_development_routes,
         register_explore_routes,
@@ -28,7 +29,19 @@ def create_app():
     register_polygon_routes(app)
     register_langata_routes(app)
     register_community_routes(app)
-    app.register_blueprint(auth, url_prefix="/api/auth")
+
+
+    # from app.routes.chat_routes import chat_bp
+    # app.register_blueprint(chat_bp)
+    # app.register_blueprint(auth, url_prefix="/api/auth")
+    # app.register_blueprint(chat_routes.chat_bp, url_prefix="/api")
+
+    from app.routes import auth_routes          
+    from app.routes import chat_routes
+
+    app.register_blueprint(auth_routes.auth, url_prefix="/api/auth")
+    app.register_blueprint(chat_routes.chat_bp, url_prefix="/api")
+
 
     with app.app_context():
         db.create_all()

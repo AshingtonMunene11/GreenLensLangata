@@ -1,83 +1,64 @@
+import os
 import pandas as pd
 import json
-import os
-
 from sklearn.linear_model import LinearRegression
 
-data_folder = "../static_data_explore"
+# Folder where CSVs are stored
+data_folder = os.path.join(os.path.dirname(__file__), "../static_data_explore")
 
-tree_cover = pd.read_csv(os.path.join(data_folder, "tree_cover.csv"))
-tree_cover = tree_cover.rename(
-    columns={tree_cover.columns[2]: "tree_loss"})  # Tree_Cover_% → tree_loss
-tree_cover = tree_cover[['Polygon_Name', 'Year', 'tree_loss']]
+# Read CSVs
+tree_cover = pd.read_csv(os.path.join(data_folder, "Tree_Cover_2020_2025.csv"))
+temperature = pd.read_csv(os.path.join(data_folder, "Nairobi_Temperature_2020_2025.csv"))
+rainfall = pd.read_csv(os.path.join(data_folder, "Nairobi_Rainfall_Stats.csv"))
 
+# Generate JSON
+polygons_json = []
 
-temperature = pd.read_csv(os.path.join(data_folder, "temperature.csv"))
-# Max_Temperature_C → temperature
-temperature = temperature.rename(
-    columns={temperature.columns[1]: "temperature"})
-temperature = temperature[['Polygon_Name', 'Year', 'temperature']]
+for polygon in tree_cover['Polygon_Name'].unique():
+    poly_dict = {"polygon_name": polygon, "metrics": []}
 
-# Load Rainfall CSV and expand for all polygons
-rainfall = pd.read_csv(os.path.join(data_folder, "rainfall.csv"))
-# Assume your Nairobi CSV has Rainfall_2020_mm and Rainfall_2025_mm
-rainfall_values = {
-    2020: float(rainfall['Rainfall_2020_mm'][0]),
-    2025: float(rainfall['Rainfall_2025_mm'][0])
-}
+    # Tree cover & temperature data for 2020 and 2025
+    tree_data = tree_cover[tree_cover['Polygon_Name'] == polygon]
+    temp_data = temperature[temperature['Polygon_Name'] == polygon]
 
-polygons = ["Langata Zone 01", "Karen Polygon",
-            "Lavington-Kilimani Zone", "DandoraNjiru Zone"]
-# Build long-form rainfall DataFrame
-rainfall_long = pd.DataFrame([
-    {'Polygon_Name': p, 'Year': y, 'rainfall': v}
-    for p in polygons
-    for y, v in rainfall_values.items()
-])
+    tree_2020 = float(tree_data[tree_data['Year'] == 2020]['Tree_Cover_%'].values[0])
+    tree_2025 = float(tree_data[tree_data['Year'] == 2025]['Tree_Cover_%'].values[0])
+    temp_2020 = float(temp_data[temp_data['Year'] == 2020]['Max_Temperature_C'].values[0])
+    temp_2025 = float(temp_data[temp_data['Year'] == 2025]['Max_Temperature_C'].values[0])
 
-# Merge all three 
-merged = pd.merge(tree_cover, temperature, on=['Polygon_Name', 'Year'])
-merged = pd.merge(merged, rainfall_long, on=['Polygon_Name', 'Year'])
+    # Linear regression to predict 2030
+    model_tree = LinearRegression().fit([[2020],[2025]], [[tree_2020],[tree_2025]])
+    model_temp = LinearRegression().fit([[2020],[2025]], [[temp_2020],[temp_2025]])
 
+    tree_2030 = model_tree.predict([[2030]])[0][0]
+    temp_2030 = model_temp.predict([[2030]])[0][0]
 
-# 2030 predictions 
-grouped = []
-for polygon_name, group in merged.groupby('Polygon_Name'):
-    group = group.sort_values('Year')
+    # Rainfall 
+    rainfall_2025 = float(rainfall['Rainfall_2025_mm'].values[0])
+    rainfall_2030 = rainfall_2025 * 1.05  # example 5% increase
 
-    predicted = {}
-    for metric in ['tree_loss', 'temperature', 'rainfall']:
-        x = group['Year'].values.reshape(-1, 1)  # 2020, 2025
-        y = group[metric].values
-        model = LinearRegression().fit(x, y)
-        pred_2030 = model.predict([[2030]])[0]
-        predicted[metric] = round(pred_2030, 2)
-
-    # Metrics array: 2025 row + 2030 predicted
-    row_2025 = group[group['Year'] == 2025].iloc[0]
-    metrics = [
-        {
-            'year': 2025,
-            'tree_loss': round(row_2025['tree_loss'], 2),
-            'temperature': round(row_2025['temperature'], 2),
-            'rainfall': round(row_2025['rainfall'], 2)
-        },
-        {
-            'year': 2030,
-            'tree_loss': predicted['tree_loss'],
-            'temperature': predicted['temperature'],
-            'rainfall': predicted['rainfall']
-        }
-    ]
-
-    grouped.append({
-        'polygon_name': polygon_name,
-        'metrics': metrics
+    # Append 2025 metrics
+    poly_dict['metrics'].append({
+        "year": 2025,
+        "tree_loss": tree_2025,
+        "temperature": temp_2025,
+        "rainfall": rainfall_2025
     })
+
+    # Append 2030 metrics
+    poly_dict['metrics'].append({
+        "year": 2030,
+        "tree_loss": tree_2030,
+        "temperature": temp_2030,
+        "rainfall": rainfall_2030
+    })
+
+    polygons_json.append(poly_dict)
+
 
 # Save JSON
 output_file = os.path.join(data_folder, "polygons_2025_2030.json")
-with open(output_file, "w") as f:
-    json.dump(grouped, f, indent=2)
+with open(output_file, 'w') as f:
+    json.dump(polygons_json, f, indent=2)
 
-print(f"JSON with 2025 + 2030 predictions saved at {output_file}")
+print("JSON created at:", output_file)

@@ -1,0 +1,9 @@
+system:index,Max_Temperature_C,Polygon_Name,Year,.geo
+1_0,18.908972348449083,Langata Zone 01,2020,"{""type"":""MultiPoint"",""coordinates"":[]}"
+1_1,17.960659281412802,Karen Polygon,2020,"{""type"":""MultiPoint"",""coordinates"":[]}"
+1_2,18.908972348449083,Lavington-Kilimani Zone,2020,"{""type"":""MultiPoint"",""coordinates"":[]}"
+1_3,19.12614724764262,DandoraNjiru Zone,2020,"{""type"":""MultiPoint"",""coordinates"":[]}"
+2_0,20.364383767240838,Langata Zone 01,2025,"{""type"":""MultiPoint"",""coordinates"":[]}"
+2_1,19.414810619559375,Karen Polygon,2025,"{""type"":""MultiPoint"",""coordinates"":[]}"
+2_2,20.364383767240838,Lavington-Kilimani Zone,2025,"{""type"":""MultiPoint"",""coordinates"":[]}"
+2_3,20.45938072204592,DandoraNjiru Zone,2025,"{""type"":""MultiPoint"",""coordinates"":[]}"

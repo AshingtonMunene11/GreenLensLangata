@@ -1,5 +1,5 @@
 {
-  "name": "client",
+  "name": "GreenLensLangata",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -19,6 +19,8 @@
     "react-hot-toast": "^2.6.0",
     "react-leaflet": "^5.0.0",
     "recharts": "^3.3.0"
+    "formik": "^2.4.6",
+    "yup": "^1.7.1"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

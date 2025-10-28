@@ -3,17 +3,16 @@ from sqlalchemy_serializer import SerializerMixin
 from sqlalchemy.orm import validates
 from app import db
 
-
-
 # db = SQLAlchemy()
+
 
 class Area(db.Model, SerializerMixin):
     __tablename__ = 'areas'
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=True, unique=True)
-    polygon_id = db.Column(db.Integer, db.ForeignKey('polygons.id'), nullable=False)
-
+    polygon_id = db.Column(db.Integer, db.ForeignKey(
+        'polygons.id'), nullable=False)
 
     # stats
     avg_temp = db.Column(db.Float)
@@ -22,7 +21,8 @@ class Area(db.Model, SerializerMixin):
     build_cover = db.Column(db.Float)
     empty_cover = db.Column(db.Float)
     flood_risk = db.Column(db.Float)
-    latest = db.Column(db.DateTime, server_default=db.func.now(), onupdate=db.func.now())
+    latest = db.Column(
+        db.DateTime, server_default=db.func.now(), onupdate=db.func.now())
 
 # geometry field for polygons
 # srid => standard lat/long
@@ -31,11 +31,12 @@ class Area(db.Model, SerializerMixin):
 # rships
 
     # reports = db.relationship('Report', back_populates='area', cascade='all, delete-orphan')
-    ai_insights = db.relationship('AIInsights', back_populates='area', cascade='all, delete-orphan')
-    development_plans = db.relationship('DevelopmentPlan', back_populates='area', cascade='all, delete-orphan')
+    insights = db.relationship(
+        'Insights', back_populates='area', cascade='all, delete-orphan')
+    development_plans = db.relationship(
+        'DevelopmentPlan', back_populates='area', cascade='all, delete-orphan')
 
-
-    serialize_rules = ('-ai_insights.area', '-development_plans.area')
+    serialize_rules = ('-insights.area', '-development_plans.area')
 
     def to_dict(self):
         return {
@@ -47,11 +48,7 @@ class Area(db.Model, SerializerMixin):
             'water_cover': self.water_cover,
             'build_cover': self.build_cover,
             'empty_cover': self.empty_cover,
-            'flood_risk':self.flood_risk,
+            'flood_risk': self.flood_risk,
             'latest': "Latest",
 
-        } 
-    
-
-    
-
+        }

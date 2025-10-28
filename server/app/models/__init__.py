@@ -5,7 +5,10 @@ from .development_plan import DevelopmentPlan
 from .polygon import Polygon
 from .report import Report
 from .ai_insight import AIInsights
-from .user import User  # Uncomment when ready
+from .Insights import Insights
+from .PolygonPlanAnalysis import PolygonAnalysis
+from .user import User
+
 
 __all__ = [
     "db",
@@ -14,5 +17,8 @@ __all__ = [
     "Polygon",
     "Report",
     "AIInsights",
+    "Insights",
+    "PolygonAnalysis",
     "User"
 ]
+

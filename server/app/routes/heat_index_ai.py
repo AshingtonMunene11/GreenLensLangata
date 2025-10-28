@@ -3,12 +3,8 @@ import ee
 import numpy as np
 from sklearn.linear_model import LinearRegression
 
-# Initialize GEE
-ee.Initialize()
-
 app = Flask(__name__)
 
-# Define polygons
 polygons = [
     ee.Geometry.Polygon([[36.785, -1.334], [36.795, -1.334],
                         [36.795, -1.324], [36.785, -1.324], [36.785, -1.334]]),
@@ -27,7 +23,7 @@ polygon_names = [
     "DandoraNjiru Zone"
 ]
 
-# Helper: fetch January max temperature for a year
+# fetch January max temperature for a year
 
 
 def get_max_temp(year, month=1):
@@ -46,34 +42,47 @@ def get_max_temp(year, month=1):
             scale=1000,
             maxPixels=1e13
         ).get('temperature_2m').getInfo()
+
+        max_temp = max_temp if max_temp is None else 0
         results.append({'name': polygon_names[idx], 'max_temp': max_temp})
     return results
 
-# Flask route for AI API
 
+@app.route('/api/polygon-temperatures-ai/<int:polygon_id>', methods=["GET"])
+def polygon_temperatures_ai(polygon_id):
 
-@app.route('/api/polygon-temperatures-ai')
-def polygon_temperatures_ai():
-    jan_2025 = get_max_temp(2025)
-    jan_2020 = get_max_temp(2020)
+    try:
 
-    merged = []
-    for i in range(len(polygon_names)):
-        # Linear regression to predict 2030 temperature
+        if polygon_id < 0 or polygon_id >= len(polygons):
+            return jsonify({"error": "Invalid polygon ID"}), 400
+
+        name = polygon_names[polygon_id]
+
+        jan_2025 = get_max_temp(2025)
+        jan_2020 = get_max_temp(2020)
+
+        temp_2020 = jan_2020[polygon_id]['max_temp']
+        temp_2025 = jan_2025[polygon_id]['max_temp']
+
+        # Predict 2030 using linear regression
         years = np.array([2020, 2025]).reshape(-1, 1)
-        temps = np.array([jan_2020[i]['max_temp'], jan_2025[i]['max_temp']])
+        temps = np.array([temp_2020, temp_2025])
         model = LinearRegression().fit(years, temps)
         pred_2030 = model.predict([[2030]])[0]
 
-        merged.append({
-            'name': polygon_names[i],
-            'max_temp_2025': jan_2025[i]['max_temp'],
-            'max_temp_2020': jan_2020[i]['max_temp'],
-            'temp_increase': jan_2025[i]['max_temp'] - jan_2020[i]['max_temp'],
+        result = {
+            'polygon_id': polygon_id,
+            'name': name,
+            'max_temp_2020': temp_2020,
+            'max_temp_2025': temp_2025,
+            'temp_increase': round(temp_2025 - temp_2020, 2),
             'predicted_2030': round(pred_2030, 1)
-        })
+        }
 
-    return jsonify(merged)
+        return jsonify(result)
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 
 if __name__ == "__main__":

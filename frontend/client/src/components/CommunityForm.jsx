@@ -9,7 +9,7 @@ export default function CommunityForm({ onSubmit, editingPost, onCancelEdit }) {
 
   const [formData, setFormData] = useState({
     title: "",
-    photo: "", 
+    photo: "",
     photoType: "url",
     location: "",
     description: "",
@@ -18,18 +18,17 @@ export default function CommunityForm({ onSubmit, editingPost, onCancelEdit }) {
 
   const maxChars = 120;
 
-  // Prefill form when editing a post 
+  // Prefill form when editing a post
   useEffect(() => {
     if (editingPost) {
       setFormData({
         title: editingPost.title || "",
-        photo: editingPost.image_url || "", 
+        photo: editingPost.image_url || "",
         photoType: editingPost.image_url ? "url" : "file",
         location: editingPost.location || "",
         description: editingPost.description || "",
       });
 
-      
       setTimeout(() => {
         if (formRef.current) {
           const headerOffset = 150;
@@ -112,17 +111,27 @@ export default function CommunityForm({ onSubmit, editingPost, onCancelEdit }) {
     if (onCancelEdit) onCancelEdit();
   };
 
-  const langataLocations = [
-    "Karen",
-    "Wilson Airport Area",
-    "Otiende",
-    "Nairobi West",
-    "Lang'ata Southlands",
-    "Nyayo Estate",
-    "Hardy",
-    "Carnivore Area",
-    "Lang'ata Shopping Center",
-    "Mugumoini",
+  const nairobiLocations = [
+    "Westlands",
+    "Kilimani",
+    "Lavington",
+    "Kileleshwa",
+    "Upper Hill",
+    "South B",
+    "South C",
+    "Embakasi",
+    "Donholm",
+    "Buruburu",
+    "Kasarani",
+    "Roysambu",
+    "Parklands",
+    "Runda",
+    "Gigiri",
+    "Eastleigh",
+    "CBD (Central Business District)",
+    "Ngong Road",
+    "Thika Road Area",
+    "Lang'ata",
   ];
 
   return (
@@ -157,11 +166,12 @@ export default function CommunityForm({ onSubmit, editingPost, onCancelEdit }) {
                 setFormData({
                   ...formData,
                   photoType: e.target.value,
-                  photo: "", 
+                  photo: "",
                 })
               }
               disabled={isSubmitting}
-              className="bg-[#112C23] border-2 border-white/90 rounded-full px-4 py-2 text-white text-sm focus:outline-none focus:border-[#86EE92] cursor-pointer">
+              className="bg-[#112C23] border-2 border-white/90 rounded-full px-4 py-2 text-white text-sm focus:outline-none focus:border-[#86EE92] cursor-pointer"
+            >
               <option value="url" className="bg-[#112C23] text-white">
                 Image URL
               </option>
@@ -174,7 +184,7 @@ export default function CommunityForm({ onSubmit, editingPost, onCancelEdit }) {
               <input
                 type="text"
                 placeholder="Paste image URL"
-                value={formData.photo || ""} 
+                value={formData.photo ?? ""} 
                 onChange={(e) =>
                   setFormData({ ...formData, photo: e.target.value })
                 }
@@ -189,7 +199,7 @@ export default function CommunityForm({ onSubmit, editingPost, onCancelEdit }) {
                 onChange={(e) =>
                   setFormData({
                     ...formData,
-                    photo: e.target.files?.[0] || "",
+                    photo: e.target.files?.[0] || null, 
                   })
                 }
                 disabled={isSubmitting}
@@ -215,9 +225,9 @@ export default function CommunityForm({ onSubmit, editingPost, onCancelEdit }) {
             focus:outline-none focus:border-[#86EE92] text-sm appearance-none cursor-pointer"
           >
             <option value="" disabled className="bg-[#112C23] text-white">
-              Select specific Lang'ata location
+              Select specific Nairobi location
             </option>
-            {langataLocations.map((loc, index) => (
+            {nairobiLocations.map((loc, index) => (
               <option
                 key={index}
                 value={loc}

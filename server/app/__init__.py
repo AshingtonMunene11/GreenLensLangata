@@ -18,7 +18,6 @@ def create_app():
     cors.init_app(app, resources={r"/*": {"origins": "http://localhost:3000"}})
     # cors.init_app(app, resources={r"/api/*": {"origins": ["http://localhost:3000", "https://greenlens.ke"]}})
 
-    # Register blueprints
     from app.routes import (
         register_development_routes,
         register_explore_routes,
@@ -32,10 +31,13 @@ def create_app():
     register_polygon_routes(app)
     register_langata_routes(app)
     register_community_routes(app)
+    
+    from app.routes import auth_routes          
+    from app.routes import chat_routes
 
-    # Auth blueprint prefix
-    app.register_blueprint(auth, url_prefix="/api/auth")
-
+    app.register_blueprint(auth_routes.auth, url_prefix="/api/auth")
+    app.register_blueprint(chat_routes.chat_bp, url_prefix="/api")
+    
     # uploaded files from static/uploads
     @app.route("/uploads/<path:filename>")
     def uploaded_file(filename):

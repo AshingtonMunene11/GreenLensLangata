@@ -31,11 +31,14 @@ export default function CommunityPostCard({
   const formattedDate = formatDate(created_at);
 
   // Handle image URL 
-  const imageSrc = image_url
-    ? image_url.startsWith("http")
-      ? image_url
-      : `http://127.0.0.1:5000/static/uploads/${image_url}`
-    : null;
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL_STATIC || "http://127.0.0.1:5000";
+
+const imageSrc = image_url
+  ? image_url.startsWith("http")
+    ? image_url
+    : `${BASE_URL}/static/uploads/${image_url}`
+  : null;
+
 
   // Check user ownership
   const isOwner = currentUserId && currentUserId === user_id;

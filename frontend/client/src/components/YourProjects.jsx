@@ -44,11 +44,11 @@ export default function AllProjects() {
 
     try {
       const res = await fetch(
-        `http://127.0.0.1:5000/development_plans/${projId}/analysis`,
+        (`http://127.0.0.1:5000/development_plans/${projId}/analysis`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-        }
+        })
       );
 
       if (!res.ok) {
@@ -120,6 +120,8 @@ export default function AllProjects() {
   };
 
   const handleSave = async (id) => {
+    console.log("Saving plan with ID:", id);
+
     try {
       const res = await fetch(`http://127.0.0.1:5000/development_plans/${id}`, {
         method: "PATCH",
@@ -285,7 +287,7 @@ export default function AllProjects() {
                   <div className="mt-4 grid grid-cols-2 gap-3">
                     <div className="border rounded-lg p-3 bg-green-50">
                       <h3 className="font-medium text-green-800 text-sm">
-                        Flora Loss
+                        FLORA LOSS
                       </h3>
                       <p className="text-lg font-semibold">
                         {typeof analysis.flora_loss_pct === "number"
@@ -297,7 +299,7 @@ export default function AllProjects() {
 
                     <div className="border rounded-lg p-3 bg-orange-50">
                       <h3 className="font-medium text-orange-800 text-sm">
-                        New Built-up %
+                        BUILT AREA <br /> (COMPLETE ZONE)
                       </h3>
                       <p className="text-lg font-semibold">
                         {typeof analysis.new_built_up_pct === "number"
@@ -314,15 +316,15 @@ export default function AllProjects() {
                   <div className="flex gap-2 mt-3">
                     <button
                       onClick={() => handleSave(proj.id)}
-                      className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition"
+                      className="px-4 py-2 bg-[#112C23] text-[#FAFCF1] rounded-full hover:bg-green-700 transition"
                     >
-                      Save
+                      SAVE
                     </button>
                     <button
                       onClick={handleCancel}
-                      className="px-4 py-2 bg-gray-400 text-white rounded hover:bg-gray-500 transition"
+                      className="px-4 py-2 bg-gray-400 text-gray-100 rounded-full hover:bg-gray-500 transition"
                     >
-                      Cancel
+                      CANCEL
                     </button>
                   </div>
                 )}

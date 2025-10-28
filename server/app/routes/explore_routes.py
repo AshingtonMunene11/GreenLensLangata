@@ -18,13 +18,14 @@ CORS(app)
 # # explore pg shows lang'ata(area) analysis and ai-insights(latets, past 5 yrs)
 # langataanalysis_bp = Blueprint('langataanalysis', __name__)
 
+
 def register_routes(app):
     @app.route("/explore", methods=['GET'])
     def get_langataanalysis():
-        langata_area=Area.query.filter_by(name="Lang'ata").first()
+        langata_area = Area.query.filter_by(name="Lang'ata").first()
         if not langata_area:
-            return jsonify({"error":"Lang'ata area not found"}), 404
-        
+            return jsonify({"error": "Lang'ata area not found"}), 404
+
     # ai insight-ltst
         latest_insight = (
             AIInsights.query.filter_by(area_id=langata_area.id)
@@ -43,7 +44,7 @@ def register_routes(app):
         )
 
         # combined response
-        response={
+        response = {
             "area_cover_analysis": langata_area.to_dict(),
             "latest_insight": latest_insight.to_dict() if latest_insight else None,
             "past_insights": [i.to_dict() for i in past_insights]
@@ -51,5 +52,3 @@ def register_routes(app):
         }
 
         return jsonify(response)
-
-    

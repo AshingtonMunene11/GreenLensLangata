@@ -1,13 +1,11 @@
 from flask import jsonify
 from flask_cors import CORS
 from app import db
-from app.models import Area, AIInsights
+from app.models import Area
 import ee
 import math
 
-
-ee.Initialize(project='serene-lotus-475317-i6')
-
+# ee.Initialize(project='serene-lotus-475317-i6')
 
 def register_langata_routes(app):
     """Attach Langata/Nairobi insights routes to the main Flask app."""

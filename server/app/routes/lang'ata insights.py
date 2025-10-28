@@ -3,8 +3,6 @@ import ee
 
 app = Flask(__name__)
 
-# Initialize Earth Engine
-ee.Initialize(project='your-project-id')  # replace with your GEE project ID
 
 @app.route("/areas/langata/insights", methods=["GET"])
 def get_langata_insights():
@@ -21,7 +19,8 @@ def get_langata_insights():
         geometry = ee.Geometry.Polygon([langata_coords])
 
         # Load ESA WorldCover data (latest available)
-        cover = ee.ImageCollection("ESA/WorldCover/v100").filterDate('2020-01-01', '2024-01-01')
+        cover = ee.ImageCollection(
+            "ESA/WorldCover/v100").filterDate('2020-01-01', '2024-01-01')
         classification = cover.first().clip(geometry)
 
         # Calculate pixel counts

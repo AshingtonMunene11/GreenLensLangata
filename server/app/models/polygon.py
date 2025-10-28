@@ -4,7 +4,6 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy_serializer import SerializerMixin
 import json
 
-
 # db = SQLAlchemy()
 
 class Polygon(db.Model, SerializerMixin):
@@ -16,12 +15,12 @@ class Polygon(db.Model, SerializerMixin):
     area = db.Column(db.Integer, db.ForeignKey('areas.id'), nullable=False)
 
 # rships
-    ai_insights = db.relationship(
-        'AIInsights', back_populates='polygon', cascade='all, delete-orphan')
+    insights = db.relationship(
+        'Insights', back_populates='polygon', cascade='all, delete-orphan')
     development_plans = db.relationship(
         'DevelopmentPlan', back_populates='polygon', cascade='all, delete-orphan')
 
-    serialize_rules = ('-area.polygons', '-ai_insights.polygon')
+    serialize_rules = ('-area.polygons', 'insights.polygon')
 
     def to_dict(self):
         return {

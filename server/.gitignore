@@ -82,3 +82,11 @@ MANIFEST
 
 # Static uploads
 server/app/static/uploads/
+
+# Migrations (auto-generated)
+migrations/
+
+# SQLite database or instance data
+instance/
+*.db
+*.sqlite3

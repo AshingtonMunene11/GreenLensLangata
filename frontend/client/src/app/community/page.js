@@ -159,7 +159,7 @@ export default function Community() {
           </h1>
           <p className="text-lg text-[#112C23] max-w-2xl">
             Report issues, celebrate green efforts and inspire change in
-            Lang'ata.
+            Nairobi.
           </p>
         </div>
       </section>

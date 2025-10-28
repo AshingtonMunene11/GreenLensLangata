@@ -29,7 +29,7 @@ def register_routes(app):
             type=data.get('type'),
             area_size=data.get('area_size'),
             status="Pending",
-            polygon_id=polygon.id,  
+            polygon_id=polygon.id,
             ai_results=data.get('ai_results', '{}')
         )
         db.session.add(new_plan)

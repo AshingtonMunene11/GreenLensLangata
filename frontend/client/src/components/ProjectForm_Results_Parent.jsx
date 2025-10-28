@@ -1,25 +1,17 @@
 "use client";
 
 import { useState } from "react";
-import ProjectForm from "./ProjectForm";
-import ResultsComponent from "./ResultsComponent";
+import ResultsComponent from "./Results";
 
-export default function ProjectPage({ selectedPolygon }) {
+export default function ProjectPage() {
   const [selectedPlan, setSelectedPlan] = useState(null);
 
   return (
     <div>
-      <ProjectForm
-        selectedPolygon={selectedPolygon}
-        onPlanCreated={plan => setSelectedPlan(plan)}
+      <ResultsComponent
+        planId={selectedPlan.id}
+        projectArea={selectedPlan.area_size}
       />
-
-      {selectedPlan && (
-        <ResultsComponent
-          planId={selectedPlan.id}
-          projectArea={selectedPlan.area_size}
-        />
-      )}
     </div>
   );
 }

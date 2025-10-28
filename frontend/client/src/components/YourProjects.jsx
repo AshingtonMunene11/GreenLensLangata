@@ -148,8 +148,8 @@ export default function AllProjects() {
     return <p className="text-center mt-20">No projects found.</p>;
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#FAFCF1]">
-      <div className="container mx-auto px-4">
+    <div className=" min-h-screen mb-10 flex flex-col bg-[#FAFCF1]">
+      <div className="ml-10 mr-10 container mx-auto px-4">
         <h1 className="mt-20 text-2xl font-bold mb-6">
           Total{" "}
           <span className="text-sm text-gray-500">({projects.length})</span>
@@ -164,12 +164,12 @@ export default function AllProjects() {
             return (
               <li
                 key={proj.id}
-                className="border border-transparent p-4 rounded-3xl shadow-sm bg-gray-200 hover:shadow-md transition"
+                className="border mr-5 w-410 border-transparent mx-auto pl-30 pr-30 h-50 rounded-3xl shadow-sm bg-gray-200 hover:shadow-md transition"
               >
                 {/* Header */}
-                <div className="flex justify-between items-start">
+                <div className="flex justify-between items-start pt-10 h">
                   <div className="flex-1">
-                    <h2 className="text-xl font-semibold flex items-center gap-2 flex-wrap">
+                    <h2 className="text-[38px] text-[#112C23] font-medium flex items-center gap-2 flex-wrap">
                       {editingId === proj.id ? (
                         <input
                           type="text"
@@ -203,7 +203,7 @@ export default function AllProjects() {
                       className="p-1 hover:bg-gray-100 rounded"
                     >
                       <svg
-                        className={`w-5 h-5 transform transition ${
+                        className={`w-8 h-8 transform transition border-2 ${
                           expandedId === proj.id ? "rotate-180" : ""
                         }`}
                         fill="none"
@@ -277,37 +277,36 @@ export default function AllProjects() {
                       <p>{proj.description}</p>
                     )}
                     <p className="mt-2 text-sm text-gray-500">
-                      Type: {proj.type} | Area: {proj.area_size} km²
+                      Type: {proj.type} Area: {proj.area_size} km²
                     </p>
-                  </div>
-                )}
+                    {/* Analysis Section */}
+                    {hasAnalysis && (
+                      <div className="mt-12 grid grid-cols-2  gap-3">
+                        <div className="border border-transparent rounded-2xl p-3 bg-green-50">
+                          <h3 className="ml-18 mt-8 font-medium mb-30 text-green-800 text-sm">
+                            FLORA LOSS
+                          </h3>
+                          <p className="text-[70px] ml-18 font-semibold mb-4">
+                            {typeof analysis.flora_loss_pct === "number"
+                              ? analysis.flora_loss_pct.toFixed(2)
+                              : "N/A"}
+                            %
+                          </p>
+                        </div>
 
-                {/* Analysis Section */}
-                {hasAnalysis && (
-                  <div className="mt-4 grid grid-cols-2 gap-3">
-                    <div className="border rounded-lg p-3 bg-green-50">
-                      <h3 className="font-medium text-green-800 text-sm">
-                        FLORA LOSS
-                      </h3>
-                      <p className="text-lg font-semibold">
-                        {typeof analysis.flora_loss_pct === "number"
-                          ? analysis.flora_loss_pct.toFixed(2)
-                          : "N/A"}
-                        %
-                      </p>
-                    </div>
-
-                    <div className="border rounded-lg p-3 bg-orange-50">
-                      <h3 className="font-medium text-orange-800 text-sm">
-                        BUILT AREA <br /> (COMPLETE ZONE)
-                      </h3>
-                      <p className="text-lg font-semibold">
-                        {typeof analysis.new_built_up_pct === "number"
-                          ? analysis.new_built_up_pct.toFixed(2)
-                          : "N/A"}
-                        %
-                      </p>
-                    </div>
+                        <div className="border border-transparent rounded-2xl p-3 bg-orange-50">
+                          <h3 className="font-medium text-orange-800 text-sm">
+                            BUILT AREA <br /> (COMPLETE ZONE)
+                          </h3>
+                          <p className="text-lg font-semibold">
+                            {typeof analysis.new_built_up_pct === "number"
+                              ? analysis.new_built_up_pct.toFixed(2)
+                              : "N/A"}
+                            %
+                          </p>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 )}
 

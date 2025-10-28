@@ -37,7 +37,7 @@ export default function AuthPopup({ onClose, onSignIn, onSignUp }) {
         {/* Description */}
         <p className="text-gray-300 text-center mb-8 text-[15px]">
           Sign in to share your environmental stories, connect with others,
-          and make a difference in Lang’ata.
+          and make a difference in Nairobi.
         </p>
 
         {/* Action Buttons */}

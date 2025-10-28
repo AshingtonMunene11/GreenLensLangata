@@ -21,14 +21,14 @@ def create_app():
         development_routes,
         explore_routes,
         langata_insights_routes,
-        PolygonPlanAnalysis_routes,
+        # PolygonPlanAnalysis_routes,
     )
 
     polygon_routes.register_routes(app)
     development_routes.register_routes(app)
     explore_routes.register_routes(app)
     langata_insights_routes.register_langata_routes(app)
-    PolygonPlanAnalysis_routes.register_routes(app)
+    # PolygonPlanAnalysis_routes.register_routes(app)
 
-    # app.register_blueprint(gee_bp)
+    app.register_blueprint(gee_bp)
     return app

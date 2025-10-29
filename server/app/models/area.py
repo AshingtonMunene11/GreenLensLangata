@@ -31,12 +31,12 @@ class Area(db.Model, SerializerMixin):
 # rships
 
     # reports = db.relationship('Report', back_populates='area', cascade='all, delete-orphan')
-    insights = db.relationship(
-        'Insights', back_populates='area', cascade='all, delete-orphan')
+    # insights = db.relationship(
+    #     'Insights', back_populates='area', cascade='all, delete-orphan')
     development_plans = db.relationship(
         'DevelopmentPlan', back_populates='area', cascade='all, delete-orphan')
 
-    serialize_rules = ('-insights.area', '-development_plans.area')
+    serialize_rules = ( '-development_plans.area') #'-insights.area',
 
     def to_dict(self):
         return {

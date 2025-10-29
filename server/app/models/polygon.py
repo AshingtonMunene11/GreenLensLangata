@@ -15,12 +15,12 @@ class Polygon(db.Model, SerializerMixin):
     area = db.Column(db.Integer, db.ForeignKey('areas.id'), nullable=False)
 
 # rships
-    insights = db.relationship(
-        'Insights', back_populates='polygon', cascade='all, delete-orphan')
+    # insights = db.relationship(
+    #     'Insights', back_populates='polygon', cascade='all, delete-orphan')
     development_plans = db.relationship(
         'DevelopmentPlan', back_populates='polygon', cascade='all, delete-orphan')
 
-    serialize_rules = ('-area.polygons', 'insights.polygon')
+    serialize_rules = ('-area.polygons',) #'insights.polygon'
 
     def to_dict(self):
         return {

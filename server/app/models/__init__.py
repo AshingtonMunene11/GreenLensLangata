@@ -6,6 +6,7 @@ from .polygon import Polygon
 from .report import Report
 # from .ai_insight import AIInsights
 # from .Insights import Insights
+
 from .PolygonPlanAnalysis import PolygonAnalysis
 from .user import User
 
@@ -16,8 +17,8 @@ __all__ = [
     "DevelopmentPlan",
     "Polygon",
     "Report",
-    "AIInsights",
-    "Insights",
+    # "AIInsights",
+    # "Insights",
     "PolygonAnalysis",
     "User"
 ]

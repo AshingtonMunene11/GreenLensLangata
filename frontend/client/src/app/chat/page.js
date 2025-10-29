@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import Navbar from "../../components/Navbar";
-import Footer from "../../components/Footer";
+// import Footer from "../../components/Footer";
 
 export default function ChatPage() {
   const [language, setLanguage] = useState("English");
@@ -47,7 +47,7 @@ export default function ChatPage() {
       <Navbar />
 
       {/* Main content */}
-      <div className="flex-grow flex flex-col items-center justify-start px-4 pt-24 pb-10">
+      <div className="grow flex flex-col items-center justify-start px-4 pt-24 pb-10">
         {/* Heading */}
         <div className="max-w-xl w-full text-center mb-6">
           <h1 className="flex justify-center text-green-800 text-2xl font-semibold mb-2">
@@ -157,7 +157,7 @@ export default function ChatPage() {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleSend()}
-              className="flex-grow border text-black border-green-300 rounded-l-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-400"
+              className="grow border text-black border-green-300 rounded-l-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-400"
             />
             <button
               onClick={handleSend}
@@ -170,7 +170,7 @@ export default function ChatPage() {
         </div>
       </div>
 
-      <Footer />
+      {/* <Footer /> */}
     </div>
   );
 }

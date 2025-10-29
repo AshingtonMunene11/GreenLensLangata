@@ -18,7 +18,7 @@ Thumbs.db
 .env.development
 .env.production
 *.bak
-instance/
+server/instance/
 
 # ========================================
 # Virtual Environment
@@ -82,3 +82,9 @@ MANIFEST
 
 # Static uploads
 server/app/static/uploads/
+
+#environment variables
+# .env.local
+
+# __pycache__
+server/app/models/__pycache__/

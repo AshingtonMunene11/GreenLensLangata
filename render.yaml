@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: greenlens-backend
+    env: python
+    runtime: python
+    buildCommand: cd server && pip install -r requirements.txt && flask db upgrade
+    startCommand: cd server && gunicorn app:app
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.11.7"
+      - key: DATABASE_URL
+        sync: false
+      - key: SECRET_KEY
+        sync: false
+      - key: JWT_SECRET_KEY
+        sync: false
+      - key: GOOGLE_APPLICATION_CREDENTIALS_JSON
+        sync: false

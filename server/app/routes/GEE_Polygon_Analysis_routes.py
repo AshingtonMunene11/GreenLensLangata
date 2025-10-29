@@ -98,43 +98,27 @@ import json
 #         return False
 
 def init_ee():
-    """Initialize Google Earth Engine using the service account key."""
+    """Initialize Google Earth Engine with a service account using Render env vars."""
     global ee_initialized
     if ee_initialized:
         return True
 
     try:
-        credentials_json = os.getenv("GOOGLE_APPLICATION_CREDENTIALS_JSON")
-        
-        if not credentials_json:
-            print("❌ GOOGLE_APPLICATION_CREDENTIALS_JSON not found in environment")
+        service_account = os.getenv("GEE_SERVICE_ACCOUNT")
+        private_key_json = os.getenv("GEE_PRIVATE_KEY")
+
+        if not service_account or not private_key_json:
+            print("❌ Missing GEE_SERVICE_ACCOUNT or GEE_PRIVATE_KEY in environment.")
             return False
-            
-        print(f"✅ Found credentials (length: {len(credentials_json)} chars)")
-        
-        # Parse JSON
-        try:
-            service_account_info = json.loads(credentials_json)
-        except json.JSONDecodeError as e:
-            print(f"❌ Invalid JSON in credentials: {e}")
-            return False
-            
-        service_account = service_account_info.get("client_email")
-        project_id = service_account_info.get("project_id", "serene-lotus-475317-i6")
-        
-        if not service_account:
-            print("❌ client_email not found in credentials")
-            return False
-            
-        print(f"👤 Using service account: {service_account}")
-        print(f"🎯 Project: {project_id}")
-        
-        # Initialize with service account
-        creds = ee.ServiceAccountCredentials(service_account, key_data=credentials_json)
-        ee.Initialize(credentials=creds, project=project_id, opt_url='https://earthengine.googleapis.com')
-        
+
+        # Parse JSON key data
+        key_data = json.loads(private_key_json)
+
+        # Authenticate and initialize Earth Engine
+        creds = ee.ServiceAccountCredentials(service_account, key_data=key_data)
+        ee.Initialize(creds)
         ee_initialized = True
-        print(f"✅ Earth Engine initialized successfully!")
+        print(f"✅ Earth Engine initialized for {service_account}")
         return True
 
     except Exception as e:
@@ -142,6 +126,7 @@ def init_ee():
         import traceback
         traceback.print_exc()
         return False
+
 
 #**************************************************************************************
 

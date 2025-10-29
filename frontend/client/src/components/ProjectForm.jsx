@@ -26,13 +26,6 @@ export default function ProjectForm({
       return;
     }
 
-    // if (projects?.some((p) => p.title === values.title)) {
-    //   alert(
-    //     "A project with this title already exists. Please choose a different title."
-    //   );
-    //   return;
-    // }
-
     setIsSubmitting(true);
 
     const { title, description, type, areaSize } = values;
@@ -72,132 +65,99 @@ export default function ProjectForm({
     }
   };
 
+  const handleCancel = (resetForm) => {
+    resetForm();
+  };
+
   return (
-    <div className="w-428 mx-auto bg-[#112C23] p-6 rounded-3xl mt-6 border border-gray-200">
-      <h2 className="text-[28px] text-white text-center mt-5 mb-10 font-semibold">
+    <div className="w-[90%] mx-auto bg-[#112C23] px-16 py-10 rounded-3xl mt-6 border border-gray-200">
+      <h2 className="text-[28px] text-[#FAFCF1] text-center mt-3 mb-10 font-semibold">
         What is your project Information?
       </h2>
       <Formik initialValues={initialValues} onSubmit={handleSubmit}>
-        <Form style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-          <label>
-            Project Title:
-            <Field
-              name="title"
-              type="text"
-              placeholder="Enter project title"
-              style={{ width: "100%", padding: "8px" }}
-              disabled={disabled}
-            />
-          </label>
+        {({ resetForm }) => (
+          <Form className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-white text-sm font-normal mb-2">
+                  Project Title:
+                </label>
+                <Field
+                  className="w-[90%] bg-transparent border-2 border-white/90 rounded-full px-6 py-3 text-white placeholder-[#2B725A] focus:outline-none focus:border-[#86EE92] text-sm"
+                  name="title"
+                  type="text"
+                  placeholder="e.g Fairview Holiday Homes"
+                  disabled={disabled}
+                />
+              </div>
 
-          <label>
-            Area Size (km²):
-            <Field
-              name="areaSize"
-              type="number"
-              step="0.001"
-              placeholder="1km2 = 1000000m2 (max 3 decimal places)"
-              style={{ width: "100%", padding: "8px" }}
-              disabled={disabled}
-            />
-          </label>
+              <div>
+                <label className="block text-white text-sm font-normal mb-2">
+                  Area Size (km²):
+                </label>
+                <Field
+                  className="w-[90%] bg-transparent border-2 border-white/90 rounded-full px-6 py-3 text-white placeholder-[#2B725A] focus:outline-none focus:border-[#86EE92] text-sm"
+                  name="areaSize"
+                  type="number"
+                  step="0.001"
+                  placeholder="1km2 = 1000000m2 (max 3 decimal places)"
+                  disabled={disabled}
+                />
+              </div>
 
-          <label>
-            Project Type:
-            <Field
-              as="select"
-              name="type"
-              style={{ width: "100%", padding: "8px" }}
-              disabled={disabled}
-            >
-              <option value="">Select type</option>
-              <option value="Infrastructure">Infrastructure</option>
-              <option value="Residential">Residential</option>
-              <option value="Commercial">Commercial</option>
-              <option value="Public">Public</option>
-            </Field>
-          </label>
+              <div>
+                <label className="block text-white text-sm font-normal mb-2">
+                  Project Type:
+                </label>
+                <Field
+                  className="w-[90%] bg-[#112C23] border-2 border-white/90 rounded-full px-6 py-3 text-white focus:outline-none focus:border-[#86EE92] text-sm appearance-none cursor-pointer"
+                  as="select"
+                  name="type"
+                  disabled={disabled}
+                >
+                  <option value="">Select type</option>
+                  <option value="Infrastructure">Infrastructure</option>
+                  <option value="Residential">Residential</option>
+                  <option value="Commercial">Commercial</option>
+                  <option value="Public">Public</option>
+                </Field>
+              </div>
 
-          <label>
-            Short Description:
-            <Field
-              as="textarea"
-              name="description"
-              rows="3"
-              placeholder="Brief project details..."
-              style={{ width: "100%", padding: "8px" }}
-              disabled={disabled}
-            />
-          </label>
+              <div>
+                <label className="block text-white text-sm font-normal mb-2">
+                  Short Description:
+                </label>
+                <Field
+                  className="w-[90%] bg-transparent border-2 border-white/90 rounded-3xl px-6 py-3 text-white placeholder-[#2B725A] focus:outline-none focus:border-[#86EE92] text-sm"
+                  as="textarea"
+                  name="description"
+                  rows="3"
+                  placeholder="Brief project details..."
+                  disabled={disabled}
+                />
+              </div>
+            </div>
 
-          <button
-            type="submit"
-            style={{
-              background: isSubmitting ? "lightgray" : "green",
-              color: "white",
-              padding: "10px",
-              border: "none",
-              borderRadius: "5px",
-              cursor: isSubmitting ? "not-allowed" : "pointer",
-            }}
-            disabled={disabled || isSubmitting}
-          >
-            {isSubmitting ? "Submitting..." : "Submit"}
-          </button>
-        </Form>
+            <div className="flex gap-4 pt-4">
+              <button
+                className="bg-[#86EE92] hover:bg-green-500 text-[#112C23] px-8 py-3 rounded-[50.5px] font-semibold text-sm transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                type="submit"
+                disabled={disabled || isSubmitting}
+              >
+                {isSubmitting ? "SUBMITTING..." : "SUBMIT"}
+              </button>
+              <button
+                type="button"
+                onClick={() => handleCancel(resetForm)}
+                disabled={isSubmitting}
+                className="bg-[#F3704F] hover:bg-orange-600 text-[#FFFFFF] px-8 py-3 rounded-[50.5px] font-semibold text-sm transition-colors cursor-pointer disabled:opacity-50"
+              >
+                CANCEL
+              </button>
+            </div>
+          </Form>
+        )}
       </Formik>
-      {/* {submittedPlan && (
-        <button
-          onClick={() => handleAnalyze(submittedPlan.id)}
-          style={{
-            background: isAnalyzing ? "gray" : "#007BFF",
-            color: "white",
-            padding: "10px",
-            border: "none",
-            borderRadius: "5px",
-            marginTop: "15px",
-            width: "100%",
-            cursor: isAnalyzing ? "not-allowed" : "pointer",
-          }}
-          disabled={isAnalyzing}
-        >
-          {isAnalyzing ? "Analyzing..." : "Analyze Plan"}
-        </button>
-      )}
-
-      {/* Spinner while analyzing */}
-      {/* {isAnalyzing && (
-        <div className="mt-4 flex justify-center items-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-yellow-500"></div>
-          <span className="ml-2 text-yellow-600 font-medium"></span>
-        </div>
-      )} */}{" "}
-      {/* {analysisResult && (
-        <div className="mt-4 bg-white rounded-lg p-4 text-black">
-          <h3 className="text-lg font-bold mb-2">Analysis Results</h3>
-          {typeof analysisResult.built_up_area === "number" && (
-            <p>Built-up Area: {analysisResult.built_up_area.toFixed(7)} km²</p>
-          )}
-          {typeof analysisResult.flora_area === "number" && (
-            <p>Flora Area: {analysisResult.flora_area.toFixed(7)} km²</p>
-          )}
-          {typeof analysisResult.built_up_pct === "number" && (
-            <p>Built-up: {analysisResult.built_up_pct.toFixed(2)}%</p>
-          )}
-          {typeof analysisResult.flora_pct === "number" && (
-            <p>Flora: {analysisResult.flora_pct.toFixed(2)}%</p>
-          )}
-          {analysisResult.status && (
-            <div
-              className={`inline-block px-3 py-1 rounded-full text-white font-semibold ${
-                analysisResult.status === "Pass" ? "bg-green-500" : "bg-red-500"
-              }`}
-            >
-              {analysisResult.status} */}
-      {/* </div>
-          )} */}
     </div>
-    //   )}
-    // </div>
   );
 }

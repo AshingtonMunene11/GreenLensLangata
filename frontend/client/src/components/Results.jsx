@@ -1,8 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+
 
 export default function ResultsComponent({ planId, projectArea }) {
+  const router = useRouter();
   const [analysis, setAnalysis] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -10,12 +13,10 @@ export default function ResultsComponent({ planId, projectArea }) {
 
   useEffect(() => {
     if (!planId) return;
-
     let isMounted = true;
 
     const triggerAnalysis = async () => {
       if (!isMounted) return;
-
       try {
         setAnalyzing(true);
         console.log(`Triggering POST analysis for plan ${planId}...`);
@@ -24,13 +25,8 @@ export default function ResultsComponent({ planId, projectArea }) {
           `http://127.0.0.1:5000/gee/development_plans/${planId}/analyze`,
           {
             method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              user_id: 1, // Replace with actual user ID if available
-              // userId || 1,
-            }),
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ user_id: 1 }),
           }
         );
 
@@ -61,7 +57,6 @@ export default function ResultsComponent({ planId, projectArea }) {
 
     const fetchExistingAnalysis = async () => {
       if (!isMounted) return;
-
       try {
         console.log(`Checking for existing analysis for plan ${planId}...`);
 
@@ -72,13 +67,11 @@ export default function ResultsComponent({ planId, projectArea }) {
         if (getRes.ok) {
           const data = await getRes.json();
           console.log("Found existing analysis:", data);
-
           if (isMounted) {
             setAnalysis(data);
             setLoading(false);
           }
         } else if (getRes.status === 404) {
-          // No existing analysis found, trigger a new one
           console.log("No analysis found, triggering new analysis...");
           await triggerAnalysis();
         } else {
@@ -86,14 +79,12 @@ export default function ResultsComponent({ planId, projectArea }) {
         }
       } catch (err) {
         console.error("Fetch error:", err);
-        // If GET fails for any reason, try to trigger new analysis
         if (isMounted) {
           await triggerAnalysis();
         }
       }
     };
 
-    // Start by checking for existing analysis
     fetchExistingAnalysis();
 
     return () => {
@@ -112,7 +103,7 @@ export default function ResultsComponent({ planId, projectArea }) {
               : "Loading results..."}
           </p>
           <p className="text-sm text-gray-500 mt-2">
-            This may take 10-30 seconds
+            This may take 10–30 seconds
           </p>
         </div>
       </div>
@@ -132,107 +123,73 @@ export default function ResultsComponent({ planId, projectArea }) {
 
   if (!analysis) return null;
 
-  // Extract data from analysis
-  const builtUpArea = analysis.built_up_area ?? 0;
-  const floraArea = analysis.flora_area ?? 0;
-  const builtUpPct = analysis.built_up_pct ?? 0;
-  const floraPct = analysis.flora_pct ?? 0;
-  const floraLossArea = analysis.flora_loss_area ?? 0;
   const floraLossPct = analysis.flora_loss_pct ?? 0;
   const newBuiltUpPct = analysis.new_built_up_pct ?? 0;
-  const polygonArea = analysis.polygon_area ?? 0;
   const recommendation = analysis.recommendation ?? "";
   const status = analysis.status ?? "Pending";
-
   const isPass = status === "Pass";
 
+  const goToYourProjects = () => {
+    router.push("/yourprojects");
+  };
+
   return (
-    <div className="p-6 bg-white rounded-2xl shadow-md max-w-2xl mx-auto mt-6">
-      <h2 className="text-2xl font-bold mb-2 text-gray-800">
-        Land Suitability Results
-      </h2>
-      <p className="text-gray-600 mb-6">
-        Custom generated insights for sustainability.
-      </p>
-
-      {/* Current State */}
-      <div className="mb-6">
-        <h3 className="text-lg font-semibold mb-3 text-gray-700">
-          Current Land State
-        </h3>
-        <div className="space-y-2 bg-gray-50 p-4 rounded-lg">
-          <p className="flex justify-between">
-            <span className="text-gray-600">Polygon area:</span>
-            <span className="font-semibold">{polygonArea.toFixed(4)} km²</span>
-          </p>
-          <p className="flex justify-between">
-            <span className="text-gray-600">Current built-up:</span>
-            <span className="font-semibold">{builtUpPct.toFixed(2)}%</span>
-          </p>
-          <p className="flex justify-between">
-            <span className="text-gray-600">Current flora cover:</span>
-            <span className="font-semibold">{floraPct.toFixed(2)}%</span>
-          </p>
-        </div>
-      </div>
-
-      {/* Impact Analysis */}
-      <div className="mb-6">
-        <h3 className="text-lg font-semibold mb-3 text-gray-700">
-          Development Impact
-        </h3>
-        <div className="space-y-2 bg-gray-50 p-4 rounded-lg">
-          <p className="flex justify-between">
-            <span className="text-gray-600">Plan area:</span>
-            <span className="font-semibold">{projectArea} km²</span>
-          </p>
-          <p className="flex justify-between">
-            <span className="text-gray-600">Flora loss area:</span>
-            <span className="font-semibold text-orange-600">
-              {floraLossArea.toFixed(4)} km²
-            </span>
-          </p>
-          <p className="flex justify-between">
-            <span className="text-gray-600">Flora loss percentage:</span>
-            <span className="font-semibold text-orange-600">
-              {floraLossPct.toFixed(2)}%
-            </span>
-          </p>
-          <p className="flex justify-between">
-            <span className="text-gray-600">New built-up percentage:</span>
-            <span className="font-semibold">{newBuiltUpPct.toFixed(2)}%</span>
-          </p>
-        </div>
-      </div>
-
-      {/* Status Badge */}
-      <div className="mb-6 flex items-center gap-3">
-        <span className="text-gray-700 font-medium">Assessment:</span>
-        <div
-          className={`inline-block px-4 py-2 rounded-full text-white font-semibold ${
-            isPass ? "bg-green-500" : "bg-red-500"
-          }`}
+    <div className=" mx-auto mt-8 space-y-6 w-[90%] ">
+      {/* TOP CARD */}
+      <div className="relative bg-[#DEDEDE] rounded-2xl w-full p-8 shadow-md text-gray-800 pt-6 pl-16">
+        {/* Top-right button */}
+        <button
+          onClick={goToYourProjects}
+          className="absolute top-6 right-6 bg-emerald-950 hover:bg-[#515151] text-[15px] text-[#FAFCF1] font-semibold border border-[#515151] rounded-full px-4 py-2 w-40 text-center cursor-pointer"
         >
-          {isPass ? "✓ Pass" : "✗ Fail"}
+          VIEW PROJECT
+        </button>
+
+        <h2 className="text-2xl font-semibold">Land Suitability Results</h2>
+        <p className="text-gray-600 mt-1">
+          AI generated insights for sustainability
+        </p>
+
+        <div className="mt-4">
+          <span
+            className={`inline-block px-3 py-1 rounded-full text-sm font-semibold text-white ${
+              isPass ? "bg-green-500" : "bg-orange-500"
+            }`}
+          >
+            {isPass ? "PASS" : "FAILED"}
+          </span>
         </div>
+
+        {recommendation && (
+          <div className="mt-4">
+            <h3 className="font-semibold text-gray-800 mb-1">Recommendation</h3>
+            <p className="text-gray-700">{recommendation}</p>
+          </div>
+        )}
       </div>
 
-      {/* Recommendation Section */}
-      {recommendation && (
-        <div
-          className={`p-4 rounded-lg border-l-4 ${
-            recommendation.includes("High impact") ||
-            recommendation.includes("Over-development")
-              ? "bg-red-50 border-red-500"
-              : recommendation.includes("Low impact")
-              ? "bg-green-50 border-green-500"
-              : "bg-yellow-50 border-yellow-500"
-          }`}
-        >
-          <h3 className="font-semibold mb-2 text-gray-800">Recommendation</h3>
-          <p className="text-gray-700">{recommendation}</p>
+      {/* BOTTOM ROW Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 h-[90%]">
+        {/* Flora Loss */}
+        <div className="mb-10 border border-transparent p-6 w-full h-[350px] rounded-3xl bg-[#DEDEDE]">
+          <p className="pt-6 pl-16 text-[28px] font-light text-emerald-950 uppercase">
+            Flora Loss
+          </p>
+          <p className="pt-20 pb-10 pl-16 text-[90px] font-medium text-emerald-950">
+            {floraLossPct.toFixed(0)}%
+          </p>
         </div>
-      )}
+
+        {/* New Built-up */}
+        <div className="mb-10 border border-transparent p-6 w-full h-[350px] rounded-3xl bg-[#DEDEDE]">
+          <p className="pt-6 pl-6 text-[28px] font-light text-emerald-950 uppercase">
+            New Built-up
+          </p>
+          <p className="pt-20 pb-10 pl-6 text-[90px] font-medium text-emerald-950">
+            {newBuiltUpPct.toFixed(0)}%
+          </p>
+        </div>
+      </div>
     </div>
   );
 }

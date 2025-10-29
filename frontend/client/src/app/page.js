@@ -9,13 +9,12 @@ import { PieChart, Pie, Cell } from "recharts";
 export default function HomePage() {
   // Pie chart data
   const data = [
-  { name: "Tree Cover", value: 21.3, color: "#1ba655" },   
-  { name: "Built-Up", value: 23, color: "#C49A6C" },       
-  { name: "Grass Land", value: 30.7, color: "#5daa87" },   
-  { name: "Water Cover", value: 0.6, color: "#1b69a6" },   
-  { name: "Other", value: 24.4, color: "#8e9eab" },        
-];
-
+    { name: "Tree Cover", value: 21.3, color: "#1ba655" },
+    { name: "Built-Up", value: 23, color: "#C49A6C" },
+    { name: "Grass Land", value: 30.7, color: "#5daa87" },
+    { name: "Water Cover", value: 0.6, color: "#1b69a6" },
+    { name: "Other", value: 24.4, color: "#8e9eab" },
+  ];
 
   return (
     <main className="bg-[#FAFCF1] min-h-screen text-[#112C23] font-sans">
@@ -34,6 +33,31 @@ export default function HomePage() {
             JOIN A MISSION <br /> MAKE A CHANGE
           </h1>
         </div>
+
+        {/* Animated Scroll Button */}
+        <button
+          onClick={() => {
+            document.getElementById("community-posts")?.scrollIntoView({
+              behavior: "smooth",
+            });
+          }}
+          className="absolute bottom-8 bg-[#1a4235] rounded-2xl p-4 hover:bg-[#112C23] transition-colors animate-bounce-slow cursor-pointer"
+          aria-label="Scroll to community posts"
+        >
+          <svg
+            className="w-6 h-6 text-white"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M19 9l-7 7-7-7"
+            />
+          </svg>
+        </button>
       </section>
 
       {/* Mission Section */}
@@ -48,7 +72,7 @@ export default function HomePage() {
       </section>
 
       {/* Community Posts */}
-      <section className="max-w-[1200px] mx-auto px-6 py-16">
+      <section id="community-posts" className="max-w-[1200px] mx-auto px-6 py-16">
         <h2 className="text-[36px] font-medium mb-10 text-left">
           View community posts
         </h2>
@@ -119,7 +143,7 @@ export default function HomePage() {
             </div>
             <div className="p-6 flex flex-col flex-1">
               <h3 className="text-[20px] font-semibold mb-2">
-                Nairobi’s Urban Nature Revival
+                Nairobi's Urban Nature Revival
               </h3>
               <p className="text-[16px] mb-2 flex-1">
                 Beneath the canopy, a quiet crisis brews. forests once...
@@ -168,7 +192,7 @@ export default function HomePage() {
             <PieChart width={620} height={400}>
               <Pie
                 data={[
-                  { name: "Tree Cover", value: 21.3, color: "#1ba655" }, 
+                  { name: "Tree Cover", value: 21.3, color: "#1ba655" },
                   { name: "Built-Up", value: 23, color: "#C49A6C" },
                   { name: "Grass Land", value: 30.7, color: "#5daa87" },
                   { name: "Water Cover", value: 0.6, color: "#1b69a6" },

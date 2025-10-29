@@ -71,22 +71,23 @@ export default function ProjectForm({
         What is your project Information?
       </h2>
       <Formik initialValues={initialValues} onSubmit={handleSubmit}>
-        <Form className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <label>
+        <Form className="grid place-items-center grid-cols-1 md:grid-cols-2  ">
+          <label className="block text-white text-sm font-normal mb-2">
             Project Title:
             <Field
-              className="block text-white text-sm font-normal mb-2"
+              className="w-[90%] mt-2 bg-transparent border-2 border-white/90 rounded-full px-6 py-3 text-white placeholder-[#2B725A] focus:outline-none focus:border-[#86EE92] text-sm"
               name="title"
               type="text"
-              placeholder="Enter project title"
+              placeholder="e.g Fairview Holiday Homes"
               style={{ width: "100%", padding: "8px" }}
               disabled={disabled}
             />
           </label>
 
-          <label>
+          <label className="block text-white text-sm font-normal mb-2">
             Area Size (km²):
             <Field
+              className="w-[90%] mt-2 bg-transparent border-2 border-white/90 rounded-full px-6 py-3 text-white placeholder-[#2B725A] focus:outline-none focus:border-[#86EE92] text-sm"
               name="areaSize"
               type="number"
               step="0.001"
@@ -96,9 +97,10 @@ export default function ProjectForm({
             />
           </label>
 
-          <label>
+          <label className="block text-white text-sm font-normal mb-2">
             Project Type:
             <Field
+              className="w-[90%] mt-2 bg-transparent border-2 border-white/90 rounded-full px-6 py-3 text-white placeholder-[#2B725A] focus:outline-none focus:border-[#86EE92] text-sm"
               as="select"
               name="type"
               style={{ width: "100%", padding: "8px" }}
@@ -112,9 +114,10 @@ export default function ProjectForm({
             </Field>
           </label>
 
-          <label>
+          <label className="mt-8 block text-white text-sm font-normal mb-2">
             Short Description:
             <Field
+              className="w-120 mt-2 bg-transparent border-2 border-white/90 rounded-3xl px-6 py-3 text-white placeholder-[#2B725A] focus:outline-none focus:border-[#86EE92] text-sm"
               as="textarea"
               name="description"
               rows="3"
@@ -130,10 +133,10 @@ export default function ProjectForm({
               type="submit"
               style={{
                 background: isSubmitting ? "lightgray" : "light-green",
-                
+
                 padding: "10px",
                 border: "none",
-                
+
                 cursor: isSubmitting ? "not-allowed" : "pointer",
               }}
               disabled={disabled || isSubmitting}

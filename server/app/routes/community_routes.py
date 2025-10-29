@@ -1,76 +1,177 @@
-import io
-from app import db
-from app.models import User, Report
+from flask import Blueprint, request, jsonify, url_for, current_app, send_from_directory
+from werkzeug.utils import secure_filename
+from app.models.report import db, Report
+from app.models.user import User
+import os
 
-def test_create_and_get_report(test_client):
-    """Should create a report and retrieve it successfully."""
+community_bp = Blueprint("community", __name__)
 
-    # Create a user first
-    user = User(username="testuser", email="test@example.com")
-    db.session.add(user)
-    db.session.commit()
-
-    # Simulate image upload
-    image_data = io.BytesIO(b"fake image data")
-    image_data.name = "test.jpg"
-
-    response = test_client.post("/reports", data={
-        "title": "Blocked Drain",
-        "description": "Drainage blocked near market",
-        "location": "Langata Market",
-        "user_id": user.id,
-        "username": user.username
-    }, content_type="multipart/form-data", follow_redirects=True)
-
-    assert response.status_code == 201
-    data = response.get_json()
-    assert data["report"]["title"] == "Blocked Drain"
-    assert data["report"]["username"] == "testuser"
-
-    # Get all reports
-    get_response = test_client.get("/reports")
-    assert get_response.status_code == 200
-    reports = get_response.get_json()
-    assert isinstance(reports, list)
-    assert any(r["title"] == "Blocked Drain" for r in reports)
-
-    # Get single report
-    report_id = data["report"]["id"]
-    single_response = test_client.get(f"/reports/{report_id}")
-    assert single_response.status_code == 200
-    single_data = single_response.get_json()
-    assert single_data["title"] == "Blocked Drain"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+UPLOAD_FOLDER = os.path.join(BASE_DIR, "..", "static", "uploads")
+UPLOAD_FOLDER = os.path.normpath(UPLOAD_FOLDER)
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 
-def test_update_and_delete_report(test_client):
-    """Should update and delete a report successfully."""
+# CREATE a new report
+@community_bp.route("/reports", methods=["POST"])
+def create_report():
+    title = request.form.get("title")
+    description = request.form.get("description")
+    location = request.form.get("location")
+    image_url = request.form.get("image_url")
+    user_id = request.form.get("user_id")
+    username = request.form.get("username")
 
-    # Create a user and report
-    user = User(username="editor", email="editor@example.com")
-    db.session.add(user)
-    db.session.commit()
+    if not title or not description or not location:
+        return jsonify({"error": "Title, description, and location are required"}), 400
 
-    report = Report(
-        title="Old Title",
-        description="Old Description",
-        location="Old Location",
-        user_id=user.id
+    if not user_id:
+        return jsonify({"error": "User ID is required"}), 400
+
+    user = User.query.get(user_id)
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+
+    if not username:
+        username = user.username
+
+    public_image_url = None
+    if "image_file" in request.files:
+        file = request.files["image_file"]
+        if file.filename:
+            filename = secure_filename(file.filename)
+            filepath = os.path.join(UPLOAD_FOLDER, filename)
+            file.save(filepath)
+            public_image_url = url_for("static", filename=f"uploads/{filename}", _external=True)
+
+    new_report = Report(
+        title=title,
+        description=description,
+        location=location,
+        image_url=image_url if image_url else public_image_url,
+        user_id=user_id,
     )
-    db.session.add(report)
+
+    db.session.add(new_report)
     db.session.commit()
 
-    # Update the report
-    update_response = test_client.put(f"/reports/{report.id}", data={
-        "title": "Updated Title",
-        "description": "Updated Description",
-        "location": "Updated Location"
-    }, content_type="multipart/form-data")
+    return jsonify({
+        "message": "Post created successfully",
+        "report": {
+            "id": new_report.id,
+            "title": new_report.title,
+            "description": new_report.description,
+            "location": new_report.location,
+            "image_url": new_report.image_url,
+            "user_id": new_report.user_id,
+            "username": username,
+            "created_at": new_report.created_at,
+        }
+    }), 201
 
-    assert update_response.status_code == 200
-    updated = update_response.get_json()["report"]
-    assert updated["title"] == "Updated Title"
 
-    # Delete the report
-    delete_response = test_client.delete(f"/reports/{report.id}")
-    assert delete_response.status_code == 200
-    assert delete_response.get_json()["message"] == "Post deleted successfully"
+# GET all reports
+@community_bp.route("/reports", methods=["GET"])
+def get_reports():
+    reports = Report.query.order_by(Report.created_at.desc()).all()
+    data = []
+
+    for r in reports:
+        user = User.query.get(r.user_id)
+        username = user.username if user else "Anonymous"
+        data.append({
+            "id": r.id,
+            "title": r.title,
+            "description": r.description,
+            "location": r.location,
+            "image_url": r.image_url,
+            "user_id": r.user_id,
+            "username": username,
+            "created_at": r.created_at,
+        })
+
+    return jsonify(data), 200
+
+
+# GET single report
+@community_bp.route("/reports/<int:id>", methods=["GET"])
+def get_report(id):
+    report = Report.query.get(id)
+    if not report:
+        return jsonify({"error": "Post not found"}), 404
+
+    user = User.query.get(report.user_id)
+    username = user.username if user else "Anonymous"
+
+    return jsonify({
+        "id": report.id,
+        "title": report.title,
+        "description": report.description,
+        "location": report.location,
+        "image_url": report.image_url,
+        "user_id": report.user_id,
+        "username": username,
+        "created_at": report.created_at,
+    }), 200
+
+
+# UPDATE a report
+@community_bp.route("/reports/<int:id>", methods=["PUT"])
+def update_report(id):
+    report = Report.query.get(id)
+    if not report:
+        return jsonify({"error": "Post not found"}), 404
+    data = request.form
+    
+    # Update fields if provided
+    if data.get("title"):
+        report.title = data.get("title")
+    if data.get("description"):
+        report.description = data.get("description")
+    if data.get("location"):
+        report.location = data.get("location")
+
+    if "image_file" in request.files:
+        file = request.files["image_file"]
+        if file and file.filename:
+            filename = secure_filename(file.filename)
+            filepath = os.path.join(UPLOAD_FOLDER, filename)
+            file.save(filepath)
+            report.image_url = url_for("static", filename=f"uploads/{filename}", _external=True)
+    elif data.get("image_url"):
+        report.image_url = data.get("image_url")
+
+    db.session.commit()
+
+    # Return updated post 
+    user = User.query.get(report.user_id)
+    username = user.username if user else "Anonymous"
+
+    return jsonify({
+        "message": "Post updated successfully",
+        "report": {
+            "id": report.id,
+            "title": report.title,
+            "description": report.description,
+            "location": report.location,
+            "image_url": report.image_url,
+            "user_id": report.user_id,
+            "username": username,
+            "created_at": report.created_at.isoformat() if report.created_at else None,
+        }
+    }), 200
+
+
+# DELETE a report
+@community_bp.route("/reports/<int:id>", methods=["DELETE"])
+def delete_report(id):
+    report = Report.query.get(id)
+    if not report:
+        return jsonify({"error": "Post not found"}), 404
+
+    db.session.delete(report)
+    db.session.commit()
+    return jsonify({"message": "Post deleted successfully"}), 200
+
+def register_community_routes(app):
+    app.register_blueprint(community_bp)

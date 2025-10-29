@@ -264,7 +264,7 @@ def ensure_ee_initialized():
     if not init_ee():
         print("❌ Request blocked: Earth Engine not initialized")
         return jsonify({
-            "error": "Failed to initialize Earth Engine",
+            "error": "Failed to initialize Earth Engine❌",
             "hint": "Check server logs and verify GOOGLE_APPLICATION_CREDENTIALS_JSON is set in Render"
         }), 500
     

@@ -139,6 +139,12 @@ def init_ee():
         traceback.print_exc()
         return False
 
+@gee_bp.route("/health", methods=["GET"])
+def health():
+    return jsonify({"status": "ok", "message": "App is running"}), 200
+
+#**************************************************************************************
+
 @gee_bp.before_request
 def ensure_ee_initialized():
     """Ensure EE is initialized before any route runs, except OPTIONS."""

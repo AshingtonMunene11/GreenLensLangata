@@ -106,43 +106,36 @@ def init_ee():
     try:
         credentials_json = os.getenv("GOOGLE_APPLICATION_CREDENTIALS_JSON")
         
-        print(f"🔍 Checking for credentials...")
-        print(f"📝 Credentials exist: {bool(credentials_json)}")
+        if not credentials_json:
+            print("❌ GOOGLE_APPLICATION_CREDENTIALS_JSON not found in environment")
+            return False
+            
+        print(f"✅ Found credentials (length: {len(credentials_json)} chars)")
         
-        if credentials_json:
-            print(f"📄 Credentials length: {len(credentials_json)} chars")
+        # Parse JSON
+        try:
             service_account_info = json.loads(credentials_json)
-            service_account = service_account_info["client_email"]
-            project_id = service_account_info.get("project_id", "serene-lotus-475317-i6")
+        except json.JSONDecodeError as e:
+            print(f"❌ Invalid JSON in credentials: {e}")
+            return False
             
-            print(f"👤 Service account: {service_account}")
-            print(f"🎯 Project ID: {project_id}")
-            
-            creds = ee.ServiceAccountCredentials(service_account, key_data=credentials_json)
-            ee.Initialize(credentials=creds, project=project_id)
-            ee_initialized = True
-            print(f"✅ Earth Engine initialized successfully!")
-            return True
+        service_account = service_account_info.get("client_email")
+        project_id = service_account_info.get("project_id", "serene-lotus-475317-i6")
         
-        else:
-            # Running locally
-            key_path = os.getenv("GOOGLE_APPLICATION_CREDENTIALS")
-            print(f"📂 Looking for local key at: {key_path}")
+        if not service_account:
+            print("❌ client_email not found in credentials")
+            return False
             
-            if not key_path or not os.path.exists(key_path):
-                print(f"❌ Local key not found")
-                return False
-
-            with open(key_path) as f:
-                service_account_info = json.load(f)
-                service_account = service_account_info["client_email"]
-                project_id = service_account_info.get("project_id", "serene-lotus-475317-i6")
-
-            creds = ee.ServiceAccountCredentials(service_account, key_path)
-            ee.Initialize(credentials=creds, project=project_id)
-            ee_initialized = True
-            print(f"✅ Earth Engine initialized locally!")
-            return True
+        print(f"👤 Using service account: {service_account}")
+        print(f"🎯 Project: {project_id}")
+        
+        # Initialize with service account
+        creds = ee.ServiceAccountCredentials(service_account, key_data=credentials_json)
+        ee.Initialize(credentials=creds, project=project_id, opt_url='https://earthengine.googleapis.com')
+        
+        ee_initialized = True
+        print(f"✅ Earth Engine initialized successfully!")
+        return True
 
     except Exception as e:
         print(f"❌ Error initializing Earth Engine: {e}")

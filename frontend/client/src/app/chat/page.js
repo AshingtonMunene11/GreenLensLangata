@@ -8,7 +8,11 @@ export default function ChatPage() {
   const [language, setLanguage] = useState("English");
   const [messages, setMessages] = useState([
     { role: "assistant", content: "Jambo! I’m your GreenLens AI." },
-    { role: "assistant", content: "We can jump to climate change talk. I’d also love to explore Green Lens’ solutions and share how we help you track your environment." }
+    {
+      role: "assistant",
+      content:
+        "We can jump to climate change talk. I’d also love to explore Green Lens’ solutions and share how we help you track your environment.",
+    },
   ]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
@@ -32,9 +36,15 @@ export default function ChatPage() {
       });
       const data = await res.json();
 
-      setMessages(prev => [...prev, { role: "assistant", content: data.response }]);
+      setMessages((prev) => [
+        ...prev,
+        { role: "assistant", content: data.response },
+      ]);
     } catch (error) {
-      setMessages(prev => [...prev, { role: "assistant", content: "Oops! Something went wrong." }]);
+      setMessages((prev) => [
+        ...prev,
+        { role: "assistant", content: "Oops! Something went wrong." },
+      ]);
     } finally {
       setInput("");
       setLoading(false);
@@ -42,42 +52,44 @@ export default function ChatPage() {
   };
 
   return (
-     <div className="flex flex-col min-h-screen bg-[#f7fdf9]">
+    <div className="flex flex-col h-screen bg-[#f7fdf9] overflow-hidden">
       {/* Navbar fixed at top */}
       <Navbar />
 
       {/* Main content */}
-      <div className="grow flex flex-col items-center justify-start px-4 pt-24 pb-10">
+      <div className="flex flex-col items-center justify-start px-4 pt-24 pb-4 flex-1 overflow-hidden">
         {/* Heading */}
-        <div className="max-w-xl w-full text-center mb-6">
-          <h1 className="flex justify-center text-green-800 text-2xl font-semibold mb-2">
-            Talk to our AI guide
+        <div className="max-w-xl w-full text-center mb-4">
+          <h1 className="text-green-800 text-2xl font-bold mb-1">
+            Talk to our AI Guide
           </h1>
-          <p className="text-sm text-gray-700">
-            Ask questions about sustainability, climate change, and more.
+          <p className="text-gray-700 text-sm">
+            Ask questions about sustainability & climate change, and more.
           </p>
         </div>
 
         {/* Language selection */}
-        <div className="flex justify-between items-center mb-4 w-full max-w-md">
-          <p className="text-black text-sm px-2">Select Language</p>
+        <div className="flex justify-between items-center w-full max-w-md mb-3">
+          <p className="text-black text-sm">Select Language</p>
           <select
             value={language}
             onChange={(e) => setLanguage(e.target.value)}
-            className="border border-green-300 rounded-full px-3 py-1 bg-[#112C23] text-white text-sm focus:ring-2 focus:ring-green-400"
+            className="border border-green-400 rounded-full px-3 py-2 bg-[#112C23] text-white text-sm"
           >
-               <option hidden disabled selected value="">Select an option</option>
-               <option>English</option>
-               <option>Kiswahili</option>
-               <option>French</option>      
-               <option>Luhya</option>
-               <option>Kalenjin</option>
-               <option>Kikuyu</option>
-               <option>Kisii</option>
-               <option>Kamba</option>
-               <option>Somali</option>
-               <option>Maasai</option>
-               <option>Embu</option>
+            <option hidden disabled value="">
+              Select an option
+            </option>
+            <option>English</option>
+            <option>Kiswahili</option>
+            <option>French</option>
+            <option>Luhya</option>
+            <option>Kalenjin</option>
+            <option>Kikuyu</option>
+            <option>Kisii</option>
+            <option>Kamba</option>
+            <option>Somali</option>
+            <option>Maasai</option>
+            <option>Embu</option>
             {/* <option>English</option>
             <option>Kiswahili</option>
             <option>Sheng</option>
@@ -120,8 +132,9 @@ export default function ChatPage() {
         </div>
 
         {/* Chat container */}
-        <div className="w-full max-w-2xl bg-white shadow-md rounded-xl border border-green-200 p-4 flex flex-col h-[75vh]">
-          <div className="flex-1 overflow-y-auto space-y-4 p-2">
+        <div className="w-full max-w-2xl bg-white border border-green-200 rounded-xl shadow-md flex flex-col h-[70vh] p-3">
+          {/* Messages */}
+          <div className="flex-1 overflow-y-auto space-y-3 p-1">
             {messages.map((msg, idx) => (
               <div
                 key={idx}
@@ -140,6 +153,7 @@ export default function ChatPage() {
                 </div>
               </div>
             ))}
+
             {loading && (
               <div className="flex justify-start">
                 <div className="bg-green-100 text-green-900 px-4 py-2 rounded-2xl rounded-bl-none animate-pulse">
@@ -147,22 +161,24 @@ export default function ChatPage() {
                 </div>
               </div>
             )}
+
             <div ref={bottomRef} />
           </div>
 
-          <div className="flex mt-4">
+          {/* Input */}
+          <div className="flex gap-2 mt-2">
             <input
               type="text"
               placeholder="What’s on your mind..."
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleSend()}
-              className="grow border text-black border-green-300 rounded-l-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-400"
+              className="grow border border-green-300 rounded-full px-4 py-2 text-black focus:ring-2 focus:ring-green-400 outline-none"
             />
             <button
               onClick={handleSend}
               disabled={loading}
-              className="bg-[#112C23] text-white px-6 py-2 rounded-r-full hover:bg-green-800 disabled:opacity-50"
+              className="bg-[#112C23] text-white px-5 py-2 rounded-full hover:bg-green-800 transition disabled:opacity-50"
             >
               Send
             </button>

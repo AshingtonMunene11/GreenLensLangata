@@ -35,9 +35,9 @@ function Developmentpage() {
 
       <button
         onClick={goToYourProjects}
-        className="mt-5 bg-emerald-950 hover:bg-[#515151] text-[15px] text-[#FAFCF1] font-semibold ml-35 mb-20 border border-[#515151] rounded-full p-2 w-40 inline-block text-center"
+        className="mt-5 bg-emerald-950 hover:bg-[#515151] text-[15px] text-[#FAFCF1] font-semibold ml-35 mb-20 border border-[#515151] rounded-full p-2 w-40 inline-block text-center cursor-pointer"
       >
-        YOUR PROJECTS
+        VIEW PROJECTS
       </button>
 
       <MapView onPolygonSelect={setSelectedPolygon} />

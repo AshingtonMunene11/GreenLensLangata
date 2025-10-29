@@ -58,6 +58,7 @@ __pycache__/
 *.pyo
 *.pyd
 instance/
+instance/*.json
 server/app/static/uploads/
 
 # ========================================

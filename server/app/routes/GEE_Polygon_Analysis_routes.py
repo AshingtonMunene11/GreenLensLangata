@@ -4,23 +4,98 @@ from app import db
 from app.models import DevelopmentPlan, PolygonAnalysis, Polygon, User
 import ee
 import re
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 gee_bp = Blueprint("gee", __name__)
 
 ee_initialized = False
 
 
+# def init_ee():
+#     global ee_initialized
+#     if not ee_initialized:
+#         try:
+#             ee.Initialize(project="serene-lotus-475317-i6")
+#             ee_initialized = True
+#             print("Earth Engine initialized successfully.")
+#         except Exception as e:
+#             print("Error initializing Earth Engine:", e)
+#             return False
+#     return True
+@gee_bp.route("/test", methods=["GET"])
+def test_gee_connection():
+    """Simple endpoint to verify GEE authentication and access."""
+    try:
+        if not init_ee():
+            return jsonify({"status": "error", "message": "Earth Engine not initialized"}), 500
+
+        image = ee.Image("USGS/SRTMGL1_003")  
+        info = image.getInfo()
+
+        return jsonify({
+            "status": "success",
+            "message": "Earth Engine connected successfully ",
+            "sample_band_keys": list(info.get("bands", [])),
+            "dataset": info.get("id", "N/A")
+        }), 200
+
+    except Exception as e:
+        print("GEE test error:", e)
+        return jsonify({
+            "status": "error",
+            "message": str(e)
+        }), 500
+
+# def init_ee():
+#     """Initialize Google Earth Engine using the service account key."""
+#     global ee_initialized
+#     if ee_initialized:
+#         return True
+
+#     try:
+#         key_path = os.getenv("GOOGLE_APPLICATION_CREDENTIALS")
+#         if not key_path or not os.path.exists(key_path):
+#             raise FileNotFoundError(f"GEE key not found at {key_path}")
+
+#         creds = ee.ServiceAccountCredentials(None, key_path)
+#         ee.Initialize(creds)
+#         ee_initialized = True
+#         print("Earth Engine initialized successfully with service account key.")
+#         return True
+#     except Exception as e:
+#         print("Error initializing Earth Engine:", e)
+#         return False
+
+import json
+
 def init_ee():
+    """Initialize Google Earth Engine using the service account key."""
     global ee_initialized
-    if not ee_initialized:
-        try:
-            ee.Initialize(project="serene-lotus-475317-i6")
-            ee_initialized = True
-            print("Earth Engine initialized successfully.")
-        except Exception as e:
-            print("Error initializing Earth Engine:", e)
-            return False
-    return True
+    if ee_initialized:
+        return True
+
+    try:
+        key_path = os.getenv("GOOGLE_APPLICATION_CREDENTIALS")
+        if not key_path or not os.path.exists(key_path):
+            raise FileNotFoundError(f"GEE key not found at {key_path}")
+
+        # Load service account email from JSON
+        with open(key_path) as f:
+            service_account_info = json.load(f)
+            service_account = service_account_info["client_email"]
+
+        creds = ee.ServiceAccountCredentials(service_account, key_path)
+        ee.Initialize(creds)
+        ee_initialized = True
+        print(f" Earth Engine initialized as {service_account}")
+        return True
+
+    except Exception as e:
+        print(" Error initializing Earth Engine:", e)
+        return False
 
 
 @gee_bp.before_request

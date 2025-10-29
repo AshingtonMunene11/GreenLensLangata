@@ -19,6 +19,8 @@ def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
 
+    os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+
     # Initialize extensions
     db.init_app(app)
     migrate.init_app(app, db)
@@ -44,8 +46,9 @@ def create_app():
     # Uploaded files
     @app.route("/uploads/<path:filename>")
     def uploaded_file(filename):
-        uploads_dir = os.path.join(app.root_path, "..", "static", "uploads")
-        return send_from_directory(uploads_dir, filename)
+        # uploads_dir = os.path.join(app.root_path, "..", "static", "uploads")
+        # return send_from_directory(uploads_dir, filename)
+        return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
     # Create database tables if they don't exist
     with app.app_context():

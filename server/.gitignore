@@ -9,42 +9,56 @@ __pycache__/
 *.swo
 .DS_Store
 Thumbs.db
+*.tmp
+*.bak
+*.pid
 
 # ========================================
 # Environment & Config Files
 # ========================================
 .env
-.env.local
-.env.development
-.env.production
+.env.*
 *.bak
 server/instance/
+server/.env
 
 # ========================================
 # Virtual Environment
 # ========================================
 venv/
-.env/
 .venv/
+env/
+ENV/
+venv.bak/
 
 # ========================================
-# Logs
+# Logs & Databases
 # ========================================
 *.log
 logs/
 *.sqlite3
+*.sqlite
 *.db
+app.db
+
+# ========================================
+# Alembic / Flask-Migrate
+# ========================================
+migrations/__pycache__/
 migrations/versions/__pycache__/
+migrations/*.pyc
+server/migrations/__pycache__/
+server/migrations/versions/__pycache__/
 
 # ========================================
 # Flask Specific
 # ========================================
-app.db
-*.sqlite
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
+instance/
+server/app/static/uploads/
 
 # ========================================
 # Next.js / Node.js
@@ -65,26 +79,10 @@ client/build/
 *.code-workspace
 
 # ========================================
-# OS Files
-# ========================================
-*.tmp
-*.bak
-*.pid
-
-# ========================================
-# Python packaging
+# Python Packaging
 # ========================================
 build/
 dist/
 *.egg-info/
 .eggs/
 MANIFEST
-
-# Static uploads
-server/app/static/uploads/
-
-#environment variables
-# .env.local
-
-# __pycache__
-server/app/models/__pycache__/

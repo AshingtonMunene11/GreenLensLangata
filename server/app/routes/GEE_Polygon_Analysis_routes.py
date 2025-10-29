@@ -71,6 +71,31 @@ def test_gee_connection():
 
 import json
 
+# def init_ee():
+#     """Initialize Google Earth Engine using the service account key."""
+#     global ee_initialized
+#     if ee_initialized:
+#         return True
+
+#     try:
+#         key_path = os.getenv("GOOGLE_APPLICATION_CREDENTIALS")
+#         if not key_path or not os.path.exists(key_path):
+#             raise FileNotFoundError(f"GEE key not found at {key_path}")
+
+#         # Load service account email from JSON
+#         with open(key_path) as f:
+#             service_account_info = json.load(f)
+#             service_account = service_account_info["client_email"]
+
+#         creds = ee.ServiceAccountCredentials(service_account, key_path)
+#         ee.Initialize(creds)
+#         ee_initialized = True
+#         print(f" Earth Engine initialized as {service_account}")
+#         return True
+
+#     except Exception as e:
+#         print(" Error initializing Earth Engine:", e)
+#         return False
 def init_ee():
     """Initialize Google Earth Engine using the service account key."""
     global ee_initialized
@@ -78,25 +103,41 @@ def init_ee():
         return True
 
     try:
-        key_path = os.getenv("GOOGLE_APPLICATION_CREDENTIALS")
-        if not key_path or not os.path.exists(key_path):
-            raise FileNotFoundError(f"GEE key not found at {key_path}")
-
-        # Load service account email from JSON
-        with open(key_path) as f:
-            service_account_info = json.load(f)
+        # Try to get JSON content from environment variable (for Render)
+        credentials_json = os.getenv("GOOGLE_APPLICATION_CREDENTIALS_JSON")
+        
+        if credentials_json:
+            # Running on Render - use JSON from environment variable
+            service_account_info = json.loads(credentials_json)
             service_account = service_account_info["client_email"]
+            
+            creds = ee.ServiceAccountCredentials(service_account, key_data=credentials_json)
+            ee.Initialize(creds)
+            ee_initialized = True
+            print(f"✅ Earth Engine initialized as {service_account}")
+            return True
+        
+        else:
+            # Running locally - use file path
+            key_path = os.getenv("GOOGLE_APPLICATION_CREDENTIALS")
+            if not key_path or not os.path.exists(key_path):
+                raise FileNotFoundError(f"GEE key not found at {key_path}")
 
-        creds = ee.ServiceAccountCredentials(service_account, key_path)
-        ee.Initialize(creds)
-        ee_initialized = True
-        print(f" Earth Engine initialized as {service_account}")
-        return True
+            with open(key_path) as f:
+                service_account_info = json.load(f)
+                service_account = service_account_info["client_email"]
+
+            creds = ee.ServiceAccountCredentials(service_account, key_path)
+            ee.Initialize(creds)
+            ee_initialized = True
+            print(f"✅ Earth Engine initialized as {service_account}")
+            return True
 
     except Exception as e:
-        print(" Error initializing Earth Engine:", e)
+        print("❌ Error initializing Earth Engine:", e)
+        import traceback
+        traceback.print_exc()
         return False
-
 
 @gee_bp.before_request
 def ensure_ee_initialized():

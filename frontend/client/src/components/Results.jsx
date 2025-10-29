@@ -93,22 +93,23 @@ export default function ResultsComponent({ planId, projectArea }) {
   }, [planId]);
 
   if (loading || analyzing) {
-    return (
-      <div className="p-6 bg-white rounded-2xl shadow-md max-w-xl mx-auto mt-6">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
-          <p className="text-lg text-gray-700">
-            {analyzing
-              ? "Running Earth Engine analysis..."
-              : "Loading results..."}
-          </p>
-          <p className="text-sm text-gray-500 mt-2">
-            This may take 10–30 seconds
-          </p>
-        </div>
+  return (
+    <div className="p-6 bg-[#112C23] rounded-2xl shadow-md max-w-xl mx-auto mt-6">
+      <div className="text-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-4 border-[#FFFFFF] border-t-transparent mx-auto mb-4"></div>
+        <p className="text-lg font-semibold text-[#FFFFFF]">
+          {analyzing
+            ? "Running AI Earth Engine analysis..."
+            : "Loading results..."}
+        </p>
+        <p className="text-sm text-[#FFFFFF] opacity-80 mt-2">
+          This may take 10–30 seconds
+        </p>
       </div>
-    );
-  }
+    </div>
+  );
+}
+
 
   if (error) {
     return (
@@ -182,10 +183,10 @@ export default function ResultsComponent({ planId, projectArea }) {
 
         {/* New Built-up */}
         <div className="mb-10 border border-transparent p-6 w-full h-[350px] rounded-3xl bg-[#DEDEDE]">
-          <p className="pt-6 pl-6 text-[28px] font-light text-emerald-950 uppercase">
+          <p className="pt-6 pl-16 text-[28px] font-light text-emerald-950 uppercase">
             New Built-up
           </p>
-          <p className="pt-20 pb-10 pl-6 text-[90px] font-medium text-emerald-950">
+          <p className="pt-20 pb-10 pl-16 text-[90px] font-medium text-emerald-950">
             {newBuiltUpPct.toFixed(0)}%
           </p>
         </div>

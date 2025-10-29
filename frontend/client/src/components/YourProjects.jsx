@@ -220,10 +220,10 @@ export default function AllProjects() {
                       value={editDescription}
                       onChange={(e) => setEditDescription(e.target.value)}
                       rows="3"
-                      className="w-full border p-2 rounded-2xl mb-4"
+                      className="w-full border p-2 rounded-2xl mb-4 text-[#112C23]"
                     />
                   ) : (
-                    <p className="ml-20 mr-80 text-[21px] text-gray-800 mb-6">
+                    <p className="ml-20 mr-80 text-[21px] text-[#112C23] mb-6">
                       {proj.description}
                     </p>
                   )}

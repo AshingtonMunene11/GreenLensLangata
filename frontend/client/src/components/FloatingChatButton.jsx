@@ -8,7 +8,7 @@ export default function FloatingChatButton() {
   return (
     <button
       onClick={() => router.push("/chat")}
-      className="fixed bottom-6 right-6 z-50 rounded-full shadow-lg hover:scale-105 transition-transform"
+      className="fixed bottom-6 right-6 z-50 rounded-full shadow-lg hover:scale-105 transition-transform cursor-pointer"
     >
       <Image
         src="/figmaAIicon.svg" 

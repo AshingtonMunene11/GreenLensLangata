@@ -25,7 +25,8 @@ def create_app():
     db.init_app(app)
     migrate.init_app(app, db)
     jwt.init_app(app)
-    cors.init_app(app, resources={r"/*": {"origins": "https://green-lens-nairobi.vercel.app/"}})
+    # cors.init_app(app, resources={r"/*": {"origins": "https://green-lens-nairobi.vercel.app/"}})
+    CORS(app, origins=["https://green-lens-nairobi.vercel.app"])
 
     # Register Blueprints
     # app.register_blueprint(gee_bp, url_prefix="/gee")

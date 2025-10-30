@@ -30,8 +30,9 @@ ee_initialized = False
 def test_gee_connection():
     """Simple endpoint to verify GEE authentication and access."""
     try:
-        if not init_ee():
-            return jsonify({"status": "error", "message": "Earth Engine not initialized"}), 500
+        ok, err = init_ee()
+        if not ok:
+            return jsonify({"status": "error", "message": err or "Earth Engine not initialized"}), 500
 
         image = ee.Image("USGS/SRTMGL1_003")  
         info = image.getInfo()
@@ -73,10 +74,12 @@ def test_gee_connection():
 import json
 
 def init_ee():
-    """Initialize Google Earth Engine using the service account key."""
+    """Initialize Google Earth Engine using the service account key.
+    Returns: (ok: bool, err: Optional[str])
+    """
     global ee_initialized
     if ee_initialized:
-        return True
+        return True, None
 
     try:
         key_path = os.getenv("GOOGLE_APPLICATION_CREDENTIALS")
@@ -89,23 +92,38 @@ def init_ee():
             service_account = service_account_info["client_email"]
 
         creds = ee.ServiceAccountCredentials(service_account, key_path)
-        ee.Initialize(creds)
+
+        project = os.getenv("EE_PROJECT")
+        # Debug information to help diagnose configuration
+        print("[GEE] Using key:", key_path)
+        print("[GEE] Service account:", service_account)
+        print("[GEE] Project:", project)
+
+        if project:
+            ee.Initialize(creds, project=project)
+        else:
+            ee.Initialize(creds)
         ee_initialized = True
         print(f" Earth Engine initialized as {service_account}")
-        return True
+        return True, None
 
     except Exception as e:
-        print(" Error initializing Earth Engine:", e)
-        return False
+        msg = str(e)
+        print(" Error initializing Earth Engine:", msg)
+        return False, msg
 
 
 @gee_bp.before_request
 def ensure_ee_initialized():
-    """Ensure EE is initialized before any route runs, except OPTIONS."""
+    """Ensure EE is initialized before any route runs, except OPTIONS and /gee/test."""
     if request.method == "OPTIONS":
         return  # Skip EE init for CORS preflight
-    if not init_ee():
-        return jsonify({"error": "Failed to initialize Earth Engine"}), 500
+    # Allow the test endpoint to handle its own diagnostics
+    if request.endpoint == "gee.test_gee_connection":
+        return
+    ok, err = init_ee()
+    if not ok:
+        return jsonify({"error": "Failed to initialize Earth Engine", "message": err}), 500
 
 
 def wkt_to_coords(wkt_str):

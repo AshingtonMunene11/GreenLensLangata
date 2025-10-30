@@ -5,6 +5,8 @@ from app.models import DevelopmentPlan, Area, Polygon, Report
 from app.routes.auth_routes import auth
 # from app.routes.GEE_Polygon_Analysis_routes import gee_bp
 from app.routes.Metrics_routes import metrics_bp
+from flask_cors import CORS
+
 from app.routes import (
     polygon_routes,
     development_routes,

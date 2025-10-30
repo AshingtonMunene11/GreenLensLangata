@@ -9,7 +9,6 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-# GOOGLE_APPLICATION_CREDENTIALS=instance/gee-key.json
 
 gee_bp = Blueprint("gee", __name__)
 

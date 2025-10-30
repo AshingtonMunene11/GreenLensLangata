@@ -3,16 +3,26 @@ services:
     name: greenlens-backend
     env: python
     runtime: python
-    buildCommand: cd server && pip install -r requirements.txt && flask db upgrade
-    startCommand: cd server && gunicorn app:app
+    buildCommand: |
+      cd server
+      pip install -r requirements.txt
+      export FLASK_APP=wsgi.py
+      flask db upgrade
+    startCommand: |
+      cd server
+      echo "$GOOGLE_APPLICATION_CREDENTIALS_JSON" > /opt/render/project/src/server/gee-key.json
+      export GOOGLE_APPLICATION_CREDENTIALS=/opt/render/project/src/server/gee-key.json
+      gunicorn wsgi:app
     envVars:
       - key: PYTHON_VERSION
         value: "3.11.7"
-      - key: DATABASE_URL
+      - key: DATABASE_URI
         sync: false
       - key: SECRET_KEY
         sync: false
       - key: JWT_SECRET_KEY
+        sync: false
+      - key: GROQ_API_KEY
         sync: false
       - key: GOOGLE_APPLICATION_CREDENTIALS_JSON
         sync: false

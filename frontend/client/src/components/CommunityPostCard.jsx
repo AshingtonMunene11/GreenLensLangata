@@ -31,7 +31,7 @@ export default function CommunityPostCard({
   const formattedDate = formatDate(created_at);
 
   // Handle image URL 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL_STATIC || "http://127.0.0.1:5000";
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL_STATIC || "https://greenlensnairobi.onrender.com";
 
 const imageSrc = image_url
   ? image_url.startsWith("http")

@@ -16,7 +16,7 @@ class Config:
     # UPLOAD_FOLDER = os.path.join(BASE_DIR, '..', 'static', 'uploads')
 
     # Database
-    SQLALCHEMY_DATABASE_URI = os.getenv(
+    SQLALCHEMY_DATABASE_URI = os.getenv("postgresql://greenlens_db2_user:coM6K760W43QzIZ1kEVmm7bQctjYa3J8@dpg-d41ek4jipnbc73fanj4g-a.oregon-postgres.render.com/greenlens_db2",
         "DATABASE_URI",
         'sqlite:///' + os.path.join(INSTANCE_DIR, 'greenlens.db')
     )
